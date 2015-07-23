@@ -296,7 +296,7 @@ pub enum ClientProperties
     LoginPassword,
     /// Automatically up-to-date for any client "in view", only valid with PERMISSION feature, holds database client id
     DatabaseId,
-    /// utomatically up-to-date for any client "in view", only valid with PERMISSION feature, holds database client id
+    /// Automatically up-to-date for any client "in view", only valid with PERMISSION feature, holds database client id
     ChannelGroupId,
     /// Automatically up-to-date for any client "in view", only valid with PERMISSION feature, holds all servergroups client belongs too
     Servergroups,

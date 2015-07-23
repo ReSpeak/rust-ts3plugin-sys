@@ -153,14 +153,14 @@ pub enum Error
     SoundUnsupportedFrequency                   = 0x09_12,
     SoundInvalidChannelCount                    = 0x09_13,
     SoundReadWave                               = 0x09_14,
-    ///For internal purposes only
+    /// For internal purposes only
     SoundNeedMoreData                           = 0x09_15,
-    ///For internal purposes only
+    /// For internal purposes only
     SoundDeviceBusy                             = 0x09_16,
     SoundNoData                                 = 0x09_17,
     SoundChannelMaskMismatch                    = 0x09_18,
 
-    // Permissions
+    /// Permissions
     PermissionsInvalidGroupId                   = 0x0a_00,
     PermissionsDuplicateEntry                   = 0x0a_01,
     PermissionsInvalidPermId                    = 0x0a_02,
@@ -175,7 +175,7 @@ pub enum Error
     PermissionsTemplateGroupIsUsed              = 0x0a_0b,
     Permissions                                 = 0x0a_0c,
 
-    // Accounting
+    /// Accounting
     AccountingVirtualserverLimitReached         = 0x0b_00,
     AccountingSlotLimitReached                  = 0x0b_01,
     AccountingLicenseFileNotFound               = 0x0b_02,
@@ -192,22 +192,22 @@ pub enum Error
     AccountingNotStarted                        = 0x0b_0d,
     AccountingToManyStarts                      = 0x0b_0e,
 
-    // Messages
+    /// Messages
     MessageInvalidId                            = 0x0c_00,
 
-    // Ban
+    /// Ban
     BanInvalidId                                = 0x0d_00,
     ConnectFailedBanned                         = 0x0d_01,
     RenameFailedBanned                          = 0x0d_02,
     BanFlooding                                 = 0x0d_03,
 
-    // Tts
+    /// Tts
     TtsUnableToInitialize                       = 0x0e_00,
 
     // Priviledge key
     PriviledgeKeyInvalid                        = 0x0f_00,
 
-    // Voip
+    /// Voip
     VoipPjsua                                   = 0x10_00,
     VoipAlreadyInitialized                      = 0x10_01,
     VoipTooManyAccounts                         = 0x10_02,
@@ -217,7 +217,7 @@ pub enum Error
     VoipCannotAnswerInitiatedCall               = 0x10_06,
     VoipNotInitialized                          = 0x10_07,
 
-    // Provisioning server
+    /// Provisioning server
     ProvisioningInvalidPassword                 = 0x11_00,
     ProvisioningInvalidRequest                  = 0x11_01,
     ProvisioningNoSlotsAvailable                = 0x11_02,
