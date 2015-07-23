@@ -1,0 +1,11 @@
+[package]
+name = "ts3plugin_sys"
+version = "0.1.0"
+authors = ["Flakebi <flakebi@t-online.de>"]
+
+[lib]
+name = "ts3plugin_sys"
+
+[dependencies]
+libc = "*"
+bitflags = "*"
