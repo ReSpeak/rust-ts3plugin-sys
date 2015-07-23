@@ -638,11 +638,11 @@ pub enum LogLevel
 pub struct Ts3Vector
 {
     /// X co-ordinate in 3D space
-    x: c_float,
+    pub x: c_float,
     /// Y co-ordinate in 3D space
-    y: c_float,
+    pub y: c_float,
     /// Z co-ordinate in 3D space
-    z: c_float
+    pub z: c_float
 }
 
 #[repr(C)]
@@ -721,28 +721,28 @@ pub enum ACLType
 pub struct VariablesExportItem
 {
     /// This item has valid values. ignore this item if 0
-    item_is_valid:   u8,
+    pub item_is_valid:   u8,
     /// The value in proposed is set. if 0 ignore proposed
-    proposed_is_set: u8,
+    pub proposed_is_set: u8,
     /// Current value (stored in memory)
-    current:         *const c_char,
+    pub current:         *const c_char,
     /// New value to change to (const, so no updates please)
-    proposed:        *const c_char
+    pub proposed:        *const c_char
 }
 
 #[repr(C)]
 pub struct VariablesExport
 {
-    items: [VariablesExportItem; MAX_VARIABLES_EXPORT_COUNT]
+    pub items: [VariablesExportItem; MAX_VARIABLES_EXPORT_COUNT]
 }
 
 #[repr(C)]
 pub struct ClientMiniExport
 {
-    id:       u16,
-    channel:  u64,
-    ident:    *const c_char,
-    nickname: *const c_char
+    pub id:       u16,
+    pub channel:  u64,
+    pub ident:    *const c_char,
+    pub nickname: *const c_char
 }
 
 #[repr(C)]

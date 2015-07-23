@@ -45,27 +45,27 @@ pub enum MenuType
 #[repr(C)]
 pub struct MenuItem
 {
-    type_name: MenuType,
-    id:        c_uint,
-    text:      [c_char; MENU_BUFSZ],
-    icon:      [c_char; MENU_BUFSZ]
+    pub type_name: MenuType,
+    pub id:        c_uint,
+    pub text:      [c_char; MENU_BUFSZ],
+    pub icon:      [c_char; MENU_BUFSZ]
 }
 
 #[repr(C)]
 pub struct Hotkey
 {
-    keyword:     [c_char; HOTKEY_BUFSZ],
-    description: [c_char; HOTKEY_BUFSZ]
+    pub keyword:     [c_char; HOTKEY_BUFSZ],
+    pub description: [c_char; HOTKEY_BUFSZ]
 }
 
 #[repr(C)]
 pub struct BookmarkItem
 {
-    name:        *mut c_char,
-    is_folder:   u8,
-    reserved:    [u8; 3],
+    pub name:        *mut c_char,
+    pub is_folder:   u8,
+    pub reserved:    [u8; 3],
     /// Is either "char *uuid" or "BookmarkList *folder"
-    uuid_folder: *mut c_char
+    pub uuid_folder: *mut c_char
 }
 
 impl BookmarkItem
@@ -94,9 +94,9 @@ impl BookmarkItem
 #[repr(C)]
 pub struct BookmarkList
 {
-    itemcount: c_int,
+    pub itemcount: c_int,
     /// Should be 0 but compiler complains (the C compiler, not the rust compiler)
-    items:     [BookmarkItem; 1]
+    pub items:     [BookmarkItem; 1]
 }
 
 #[repr(C)]

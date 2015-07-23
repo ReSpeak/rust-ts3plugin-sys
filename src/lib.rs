@@ -1,9 +1,13 @@
+//! The low-level rust bindings of the TeamSpeak3 plugin API.
+//! The original SDK and documentation can be downloaded from
+//! the [TeamSpeak website](http://www.teamspeak.com/?page=downloads).
+
 extern crate libc;
 #[macro_use]
 extern crate bitflags;
 
-mod clientlib_publicdefinitions;
-mod plugin_definitions;
-mod public_definitions;
-mod public_errors;
-mod ts3functions;
+pub mod clientlib_publicdefinitions;
+pub mod plugin_definitions;
+pub mod public_definitions;
+pub mod public_errors;
+pub mod ts3functions;
