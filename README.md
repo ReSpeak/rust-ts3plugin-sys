@@ -1,11 +1,12 @@
 TS3Plugin-sys
 =============
+The documentation can be found [here on GitHub-Pages](https://flakebi.github.io/rust-ts3plugin/doc/ts3plugin_sys/).
 
 Usage
 -----
-Add the following to you `Cargo.toml`:
+Add the following to your `Cargo.toml`:
 ```
-[dependencies.ts3plugin-sys]
+[dependencies.ts3plugin_sys]
 git = "https://github.com/Flakebi/rust-ts3plugin-sys"
 ```
 
