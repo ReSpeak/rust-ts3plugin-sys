@@ -8,6 +8,7 @@ pub const MENU_BUFSZ:   usize = 128;
 pub const HOTKEY_BUFSZ: usize = 128;
 
 /// Return values for offersConfigure
+#[derive(Copy, Clone)]
 #[repr(C)]
 pub enum ConfigureOffer
 {

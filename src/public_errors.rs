@@ -2,7 +2,8 @@
 
 //! This file contains the definitions of public_erros.h and public_erros_rare.h
 
-#[repr(C)]
+#[derive(Debug, Eq, PartialEq)]
+#[repr(u32)]
 pub enum Error
 {
     /// General

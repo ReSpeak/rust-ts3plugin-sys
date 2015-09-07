@@ -22,11 +22,13 @@ pub struct Ts3Functions
     pub log_message:                                    extern fn(log_message: *const c_char, severity: LogLevel, channel: *const c_char, log_id: u64) -> c_uint,
 
     /// Sound
-    pub get_play_back_device_list:                      extern fn(mode_id: *const c_char, result: *mut *mut *mut *mut c_char) -> c_uint,
+    pub get_playback_device_list:                       extern fn(mode_id: *const c_char, result: *mut *mut *mut *mut c_char) -> c_uint,
     pub get_playback_mode_list:                         extern fn(result: *mut *mut *mut c_char) -> c_uint,
     pub get_capture_device_list:                        extern fn(mode_id: *const c_char, result: *mut *mut *mut *mut c_char) -> c_uint,
     pub get_capture_mode_list:                          extern fn(result: *mut *mut *mut c_char) -> c_uint,
     pub get_default_playback_device:                    extern fn(mode_id: *const c_char, result: *mut *mut *mut c_char) -> c_uint,
+    pub get_default_playback_mode:                      extern fn(result: *mut *mut c_char) -> c_uint,
+    pub get_default_capture_device:                     extern fn(mode_id: *const c_char, result: *mut *mut *mut c_char) -> c_uint,
     pub get_default_capture_mode:                       extern fn(result: *mut *mut c_char) -> c_uint,
     pub open_playback_device:                           extern fn(server_connection_handler_id: u64, mode_id: *const c_char, playback_device: *const c_char) -> c_uint,
     pub open_capture_device:                            extern fn(server_connection_handler_id: u64, mode_id: *const c_char, capture_device: *const c_char) -> c_uint,
@@ -41,6 +43,7 @@ pub struct Ts3Functions
     pub play_wave_file_handle:                          extern fn(server_connection_handler_id: u64, path: *const c_char, play_loop: c_int, wave_handle: *mut u64) -> c_uint,
     pub pause_wave_file_handle:                         extern fn(server_connection_handler_id: u64, wave_handle: u64, pause: c_int) -> c_uint,
     pub close_wave_file_handle:                         extern fn(server_connection_handler_id: u64, wave_handle: u64) -> c_uint,
+    pub play_wave_file:                                 extern fn(server_connection_handler_id: u64, path: *const c_char) -> c_uint,
     pub register_custom_device:                         extern fn(device_id: *const c_char, device_display_name: *const c_char, cap_frequency: c_int, cap_channels: c_int, play_frequency: c_int, play_channels: c_int) -> c_uint,
     pub unregister_custom_device:                       extern fn(device_id: *const c_char) -> c_uint,
     pub process_custom_capture_data:                    extern fn(device_name: *const c_char, buffer: *const c_short, samples: c_int) -> c_uint,

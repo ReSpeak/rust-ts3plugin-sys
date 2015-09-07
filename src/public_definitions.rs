@@ -617,6 +617,7 @@ pub enum LogTypes
     Database     = 16
 }
 
+#[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub enum LogLevel
 {
