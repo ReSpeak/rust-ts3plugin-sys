@@ -3,16 +3,16 @@
 //! This file contains the definitions of clientlib_publicdefinitions.h
 
 #[repr(C)]
-pub enum Visibility
-{
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Visibility {
     Enter = 0,
     Retain,
     Leave
 }
 
 #[repr(C)]
-pub enum ConnectStatus
-{
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum ConnectStatus {
     /// There is no activity to the server, this is the default value
     Disconnected = 0,
     /// We are trying to connect, we haven't got a clientID yet, we haven't been accepted by the server

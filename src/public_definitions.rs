@@ -59,6 +59,7 @@ pub const SPEAKER_HEADPHONES_RIGHT:      usize = 0x40000;
 pub const SPEAKER_MONO:                  usize = 0x40000;
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TalkStatus
 {
     NotTalking           = 0,
@@ -67,6 +68,7 @@ pub enum TalkStatus
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CodecType
 {
     /// Mono,   16bit,  8kHz, bitrate dependent on the quality setting
@@ -84,6 +86,7 @@ pub enum CodecType
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CodecEncryptionMode
 {
     PerChannel = 0,
@@ -92,6 +95,7 @@ pub enum CodecEncryptionMode
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TextMessageTargetMode
 {
     Client = 0,
@@ -101,6 +105,7 @@ pub enum TextMessageTargetMode
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MuteInputStatus
 {
     None = 0,
@@ -108,6 +113,7 @@ pub enum MuteInputStatus
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MuteOutputStatus
 {
     None = 0,
@@ -115,6 +121,7 @@ pub enum MuteOutputStatus
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HardwareInputStatus
 {
     Disabled = 0,
@@ -122,6 +129,7 @@ pub enum HardwareInputStatus
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HardwareOutputStatus
 {
     Disabled = 0,
@@ -129,6 +137,7 @@ pub enum HardwareOutputStatus
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum InputDeactivationStatus
 {
     Active      = 0,
@@ -136,6 +145,7 @@ pub enum InputDeactivationStatus
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ReasonIdentifier
 {
     /// No reason data
@@ -165,6 +175,7 @@ pub enum ReasonIdentifier
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ChannelProperties
 {
     /// Available for all channels that are "in view", always up-to-date
@@ -233,6 +244,7 @@ pub enum ChannelProperties
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ClientProperties
 {
     /// Automatically up-to-date for any client "in view", can be used to identify this particular client installation
@@ -356,6 +368,7 @@ pub enum ClientProperties
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum VirtualServerProperties
 {
     /// Available when connected, can be used to identify this particular server installation
@@ -515,6 +528,7 @@ pub enum VirtualServerProperties
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ConnectionProperties
 {
     /// Average latency for a round trip through and back this connection
@@ -607,6 +621,7 @@ pub enum ConnectionProperties
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LogTypes
 {
     None         =  0,
@@ -647,6 +662,7 @@ pub struct Ts3Vector
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum GroupWhisperType
 {
     Servergroup      = 0,
@@ -657,6 +673,7 @@ pub enum GroupWhisperType
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum GroupWhisperTargetMode
 {
     All                   = 0,
@@ -670,6 +687,7 @@ pub enum GroupWhisperTargetMode
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MonoSoundDestination
 {
     /// Send mono sound to all available speakers
@@ -681,6 +699,7 @@ pub enum MonoSoundDestination
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SecuritySaltOptions
 {
     /// Put nickname into security hash
@@ -691,6 +710,7 @@ pub enum SecuritySaltOptions
 
 /// This enum is used to disable client commands on the server
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ClientCommand
 {
     RequestConnectionInfo       = 0,
@@ -710,6 +730,7 @@ pub enum ClientCommand
 
 /// Access Control List
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ACLType
 {
     None      = 0,
@@ -747,6 +768,7 @@ pub struct ClientMiniExport
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum GroupShowNameTreeMode
 {
     /// Dont group show name
@@ -758,6 +780,7 @@ pub enum GroupShowNameTreeMode
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum PluginTargetMode
 {
     /// Send plugincmd to all clients in current channel
@@ -772,6 +795,7 @@ pub enum PluginTargetMode
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ServerBinding
 {
     Virtualserver = 0,
@@ -780,7 +804,8 @@ pub enum ServerBinding
 }
 
 #[repr(C)]
-pub enum HostMessageMode
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum HostmessageMode
 {
     /// Dont display anything
     None = 0,
@@ -793,7 +818,8 @@ pub enum HostMessageMode
 }
 
 #[repr(C)]
-pub enum HostBannerMode
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum HostbannerMode
 {
     /// Do not adjust
     NoAdjust = 0,
@@ -804,6 +830,7 @@ pub enum HostBannerMode
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum FileTransferState
 {
     Initialising = 0,
@@ -812,6 +839,7 @@ pub enum FileTransferState
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum FileListType
 {
     Directory = 0,
@@ -819,6 +847,7 @@ pub enum FileListType
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ClientType
 {
     Normal = 0,
@@ -826,6 +855,7 @@ pub enum ClientType
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AwayStatus
 {
     None = 0,
@@ -833,6 +863,7 @@ pub enum AwayStatus
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CommandLinePropertiesRare
 {
     Nothing = 0,
@@ -840,6 +871,7 @@ pub enum CommandLinePropertiesRare
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ServerInstancePropertiesRare
 {
     DatabaseVersion = 0,
@@ -865,6 +897,7 @@ pub enum ServerInstancePropertiesRare
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LicenseViolationType
 {
     No = 0,
@@ -872,8 +905,8 @@ pub enum LicenseViolationType
     SlotSuspicion
 }
 
-bitflags!{flags BBCodeTags: u32
-{
+bitflags! {
+flags BBCodeTags: u32 {
     const B           = 0x00000001,
     const I           = 0x00000002,
     const U           = 0x00000004,

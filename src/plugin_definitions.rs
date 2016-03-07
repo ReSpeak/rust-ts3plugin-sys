@@ -8,8 +8,8 @@ pub const MENU_BUFSZ:   usize = 128;
 pub const HOTKEY_BUFSZ: usize = 128;
 
 /// Return values for offersConfigure
-#[derive(Copy, Clone)]
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ConfigureOffer
 {
     /// Plugin does not implement ts3plugin_configure
@@ -21,6 +21,7 @@ pub enum ConfigureOffer
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MessageTarget
 {
 	Server = 0,
@@ -28,6 +29,7 @@ pub enum MessageTarget
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ItemType
 {
 	Server = 0,
@@ -36,6 +38,7 @@ pub enum ItemType
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MenuType
 {
 	Global = 0,
@@ -101,6 +104,7 @@ pub struct BookmarkList
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum GuiProfile
 {
 	SoundCapture = 0,
@@ -111,6 +115,7 @@ pub enum GuiProfile
 }
 
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ConnectTab
 {
 	New = 0,
