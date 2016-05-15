@@ -98,7 +98,7 @@ pub enum CodecEncryptionMode
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TextMessageTargetMode
 {
-    Client = 0,
+    Client = 1,
     Channel,
     Server,
     Max
@@ -191,9 +191,9 @@ pub enum ChannelProperties
     /// Available for all channels that are "in view", always up-to-date
     CodecQuality,
     /// Available for all channels that are "in view", always up-to-date
-    Maxclients,
+    MaxClients,
     /// Available for all channels that are "in view", always up-to-date
-    Maxfamilyclients,
+    MaxFamilyClients,
     /// Available for all channels that are "in view", always up-to-date
     Order,
     /// Available for all channels that are "in view", always up-to-date
@@ -221,11 +221,11 @@ pub enum ChannelProperties
     Dummy6,
     Dummy7,
     /// Available for all channels that are "in view", always up-to-date
-    FlagMaxclientsUnlimited,
+    FlagMaxClientsUnlimited,
     /// Available for all channels that are "in view", always up-to-date
-    FlagMaxfamilyclientsUnlimited,
+    FlagMaxFamilyClientsUnlimited,
     /// Available for all channels that are "in view", always up-to-date
-    FlagMaxfamilyclientsInherited,
+    FlagMaxFamilyClientsInherited,
     /// Only available client side, stores whether we are subscribed to this channel
     FlagAreSubscribed,
     /// Not available client side, the folder used for file-transfers for this channel
@@ -262,7 +262,7 @@ pub enum ClientProperties
     /// Automatically up-to-date for any client "in view", this clients headphones/speakers/mic combined mute status
     OutputMuted,
     /// Automatically up-to-date for any client "in view", this clients headphones/speakers only mute status
-    OutputonlyMuted,
+    OutputOnlyMuted,
     /// Automatically up-to-date for any client "in view", this clients microphone hardware status (is the capture device opened?)
     InputHardware,
     /// Automatically up-to-date for any client "in view", this clients headphone/speakers hardware status (is the playback device opened?)
@@ -382,7 +382,7 @@ pub enum VirtualServerProperties
     /// Available when connected
     Version,
     /// Only available on request (=> requestServerVariables), stores the maximum number of clients that may currently join the server
-    Maxclients,
+    MaxClients,
     /// Not available to clients, the server password
     Password,
     /// Only available on request (=> requestServerVariables)
@@ -534,7 +534,7 @@ pub enum ConnectionProperties
     /// Average latency for a round trip through and back this connection
     Ping = 0,
     /// Standard deviation of the above average latency
-    PingDeciation,
+    PingDeviation,
     /// How long the connection exists already
     ConnectedTime,
     /// How long since the last action of this client
