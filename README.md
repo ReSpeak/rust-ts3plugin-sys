@@ -7,7 +7,7 @@ Usage
 Add the following to your `Cargo.toml`:
 ```
 [dependencies]
-ts3plugin-sys = "0.1"
+ts3plugin-sys = "0.2"
 ```
 
 License

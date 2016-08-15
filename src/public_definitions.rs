@@ -36,27 +36,30 @@ pub const MIN_SECONDS_CLIENTID_REUSE:                usize = 300;
 pub const MAX_VARIABLES_EXPORT_COUNT:                usize = 64;
 
 /// Speaker locations used by some sound callbacks
-pub const SPEAKER_FRONT_LEFT:            usize = 0x1;
-pub const SPEAKER_FRONT_RIGHT:           usize = 0x2;
-pub const SPEAKER_FRONT_CENTER:          usize = 0x4;
-pub const SPEAKER_LOW_FREQUENCY:         usize = 0x8;
-pub const SPEAKER_BACK_LEFT:             usize = 0x10;
-pub const SPEAKER_BACK_RIGHT:            usize = 0x20;
-pub const SPEAKER_FRONT_LEFT_OF_CENTER:  usize = 0x40;
-pub const SPEAKER_FRONT_RIGHT_OF_CENTER: usize = 0x80;
-pub const SPEAKER_BACK_CENTER:           usize = 0x100;
-pub const SPEAKER_SIDE_LEFT:             usize = 0x200;
-pub const SPEAKER_SIDE_RIGHT:            usize = 0x400;
-pub const SPEAKER_TOP_CENTER:            usize = 0x800;
-pub const SPEAKER_TOP_FRONT_LEFT:        usize = 0x1000;
-pub const SPEAKER_TOP_FRONT_CENTER:      usize = 0x2000;
-pub const SPEAKER_TOP_FRONT_RIGHT:       usize = 0x4000;
-pub const SPEAKER_TOP_BACK_LEFT:         usize = 0x8000;
-pub const SPEAKER_TOP_BACK_CENTER:       usize = 0x10000;
-pub const SPEAKER_TOP_BACK_RIGHT:        usize = 0x20000;
-pub const SPEAKER_HEADPHONES_LEFT:       usize = 0x40000;
-pub const SPEAKER_HEADPHONES_RIGHT:      usize = 0x40000;
-pub const SPEAKER_MONO:                  usize = 0x40000;
+bitflags! {
+pub flags Speaker: c_uint {
+    const SPEAKER_FRONT_LEFT            = 0x00001,
+    const SPEAKER_FRONT_RIGHT           = 0x00002,
+    const SPEAKER_FRONT_CENTER          = 0x00004,
+    const SPEAKER_LOW_FREQUENCY         = 0x00008,
+    const SPEAKER_BACK_LEFT             = 0x00010,
+    const SPEAKER_BACK_RIGHT            = 0x00020,
+    const SPEAKER_FRONT_LEFT_OF_CENTER  = 0x00040,
+    const SPEAKER_FRONT_RIGHT_OF_CENTER = 0x00080,
+    const SPEAKER_BACK_CENTER           = 0x00100,
+    const SPEAKER_SIDE_LEFT             = 0x00200,
+    const SPEAKER_SIDE_RIGHT            = 0x00400,
+    const SPEAKER_TOP_CENTER            = 0x00800,
+    const SPEAKER_TOP_FRONT_LEFT        = 0x01000,
+    const SPEAKER_TOP_FRONT_CENTER      = 0x02000,
+    const SPEAKER_TOP_FRONT_RIGHT       = 0x04000,
+    const SPEAKER_TOP_BACK_LEFT         = 0x08000,
+    const SPEAKER_TOP_BACK_CENTER       = 0x10000,
+    const SPEAKER_TOP_BACK_RIGHT        = 0x20000,
+    const SPEAKER_HEADPHONES_LEFT       = 0x10000000,
+    const SPEAKER_HEADPHONES_RIGHT      = 0x20000000,
+    const SPEAKER_MONO                  = 0x40000000,
+}}
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -363,7 +366,7 @@ pub enum ClientProperties
     /// Automatically up-to-date for any client "in view", only valid with PERMISSION feature, contains channel_id where the channel_group_id is set from
     ChannelGroupInheritedChannelId,
     /// Automatically up-to-date for any client "in view", stores icons for partner badges
-    Badges, 
+    Badges,
     Endmarker
 }
 
@@ -426,9 +429,9 @@ pub enum VirtualServerProperties
     MaxDownloadTotalBandwidth,
     /// Only available on request (=> requestServerVariables)
     MaxUploadTotalBandwidth,
-    /// Available when connected, always up-to-date 
+    /// Available when connected, always up-to-date
     HostbannerUrl,
-    /// Available when connected, always up-to-date 
+    /// Available when connected, always up-to-date
     HostbannerGfxUrl,
     /// Available when connected, always up-to-date
     HostbannerGfxInterval,
@@ -906,7 +909,7 @@ pub enum LicenseViolationType
 }
 
 bitflags! {
-flags BBCodeTags: u32 {
+pub flags BBCodeTags: u32 {
     const B           = 0x00000001,
     const I           = 0x00000002,
     const U           = 0x00000004,

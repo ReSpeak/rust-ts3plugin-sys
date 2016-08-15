@@ -1,6 +1,6 @@
 [package]
 name = "ts3plugin-sys"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Flakebi <flakebi@t-online.de>"]
 description = "FFI bindings to the TeamSpeak3 Plugin API"
 repository = "https://github.com/Flakebi/rust-ts3plugin-sys"

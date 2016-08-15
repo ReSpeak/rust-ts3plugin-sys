@@ -13,37 +13,37 @@ pub const HOTKEY_BUFSZ: usize = 128;
 pub enum ConfigureOffer
 {
     /// Plugin does not implement ts3plugin_configure
-	No = 0,
-	/// Plugin does implement ts3plugin_configure and requests to run this function in an own thread
-	NewThread,
-	/// Plugin does implement ts3plugin_configure and requests to run this function in the Qt GUI thread
-	QtThread
+    No = 0,
+    /// Plugin does implement ts3plugin_configure and requests to run this function in an own thread
+    NewThread,
+    /// Plugin does implement ts3plugin_configure and requests to run this function in the Qt GUI thread
+    QtThread
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MessageTarget
 {
-	Server = 0,
-	Channel
+    Server = 0,
+    Channel
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ItemType
 {
-	Server = 0,
-	Channel,
-	Client
+    Server = 0,
+    Channel,
+    Client
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MenuType
 {
-	Global = 0,
-	Channel,
-	Client
+    Global = 0,
+    Channel,
+    Client
 }
 
 #[repr(C)]
@@ -107,18 +107,18 @@ pub struct BookmarkList
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum GuiProfile
 {
-	SoundCapture = 0,
-	SoundPlayback,
-	Hotkey,
-	Soundpack,
-	Identity
+    SoundCapture = 0,
+    SoundPlayback,
+    Hotkey,
+    Soundpack,
+    Identity
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ConnectTab
 {
-	New = 0,
-	Current,
-	NewIfCurrentConnected
+    New = 0,
+    Current,
+    NewIfCurrentConnected
 }
