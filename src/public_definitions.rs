@@ -2,7 +2,8 @@
 
 //! This file contains the definitions of public_definitions.h and public_rare_definitions.h
 
-use libc::*;
+use std;
+use std::os::raw::*;
 
 /// Limited length, measured in characters
 pub const MAX_SIZE_CHANNEL_NAME:                     usize = 40;
@@ -527,6 +528,12 @@ pub enum VirtualServerProperties
     HostbannerMode,
     /// Available when connected, always up-to-date
     ChannelTempDeleteDelayDefault,
+    /// Only available on request (=> requestServerVariables)
+    MinAndroidVersion,
+    /// Only available on request (=> requestServerVariables)
+    MinIosVersion,
+    /// Only available on request (=> requestServerVariables)
+    MinWinphoneVersion,
     Endmarker
 }
 
@@ -632,7 +639,8 @@ pub enum LogTypes
     Console      =  2,
     Userlogging  =  4,
     NoNetlogging =  8,
-    Database     = 16
+    Database     = 16,
+    Syslog       = 32
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -728,6 +736,7 @@ pub enum ClientCommand
     RequestChannelXXSubscripeXX = 9,
     RequestServerConnectionInfo = 10,
     RequestSendXXXTextMsg       = 11,
+    FileTransfer                = 12,
     Endmarker
 }
 
@@ -739,6 +748,41 @@ pub enum ACLType
     None      = 0,
     WhiteList = 1,
     BlackList = 2
+}
+
+/// File transfer actions
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum FileTransferAction
+{
+    InitServer  = 0,
+    InitChannel = 1,
+    Upload      = 2,
+    Download    = 3,
+    Delete      = 4,
+    CreateDir   = 5,
+    Rename      = 6,
+    FileList    = 7,
+    FileInfo    = 8
+}
+
+/// File transfer status
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum FileTransferState
+{
+    Initialising = 0,
+    Active,
+    Finished
+}
+
+/// File transfer type
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum FileListType
+{
+    Directory = 0,
+    File
 }
 
 /// Some structs to handle variables in callbacks
@@ -769,6 +813,39 @@ pub struct ClientMiniExport
     pub ident:    *const c_char,
     pub nickname: *const c_char
 }
+
+#[repr(C)]
+pub struct TransformFilePathExport
+{
+    pub channel:                        u64,
+    pub filename:                       *const c_char,
+    pub action:                         c_int,
+    pub transformed_file_name_max_size: c_int,
+    pub channel_path_max_size:          c_int
+}
+
+#[repr(C)]
+pub struct TransformFilePathExportReturns
+{
+    pub transformed_file_name: *mut c_char,
+    pub channel_path:          *mut c_char,
+    pub log_file_action:       c_int
+}
+
+#[repr(C)]
+pub struct FileTransferCallbackExport
+{
+    pub client_id:          u16,
+    pub transfer_id:        u16,
+    pub remote_transfer_id: u16,
+    pub status:             c_uint,
+    pub status_message:     *const c_char,
+    pub remote_file_size:   u64,
+    pub bytes:              u64,
+    pub is_sender:          c_int
+}
+
+pub const BANDWIDTH_LIMIT_UNLIMITED: u64 = std::u64::MAX;
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -832,22 +909,6 @@ pub enum HostbannerMode
     AdjustKeepAspect
 }
 
-#[repr(C)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum FileTransferState
-{
-    Initialising = 0,
-    Active,
-    Finished
-}
-
-#[repr(C)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum FileListType
-{
-    Directory = 0,
-    File
-}
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -910,40 +971,42 @@ pub enum LicenseViolationType
 
 bitflags! {
 pub flags BBCodeTags: u32 {
-    const B           = 0x00000001,
-    const I           = 0x00000002,
-    const U           = 0x00000004,
-    const S           = 0x00000008,
-    const SUP         = 0x00000010,
-    const SUB         = 0x00000020,
-    const COLOR       = 0x00000040,
-    const SIZE        = 0x00000080,
-    const GROUP_TEXT  = 0x000000FF,
+    const BBCODE_B           = 0x00000001,
+    const BBCODE_I           = 0x00000002,
+    const BBCODE_U           = 0x00000004,
+    const BBCODE_S           = 0x00000008,
+    const BBCODE_SUP         = 0x00000010,
+    const BBCODE_SUB         = 0x00000020,
+    const BBCODE_COLOR       = 0x00000040,
+    const BBCODE_SIZE        = 0x00000080,
+    const BBCODE_GROUP_TEXT  = 0x000000FF,
 
-    const LEFT        = 0x00001000,
-    const RIGHT       = 0x00002000,
-    const CENTER      = 0x00004000,
-    const GROUP_ALIGN = 0x00007000,
+    const BBCODE_LEFT        = 0x00001000,
+    const BBCODE_RIGHT       = 0x00002000,
+    const BBCODE_CENTER      = 0x00004000,
+    const BBCODE_GROUP_ALIGN = 0x00007000,
 
-    const URL         = 0x00010000,
-    const IMAGE       = 0x00020000,
-    const HR          = 0x00040000,
+    const BBCODE_URL         = 0x00010000,
+    const BBCODE_IMAGE       = 0x00020000,
+    const BBCODE_HR          = 0x00040000,
 
-    const LIST        = 0x00100000,
-    const LISTITEM    = 0x00200000,
-    const GROUP_LIST  = 0x00300000,
+    const BBCODE_LIST        = 0x00100000,
+    const BBCODE_LISTITEM    = 0x00200000,
+    const BBCODE_GROUP_LIST  = 0x00300000,
 
-    const TABLE       = 0x00400000,
-    const TR          = 0x00800000,
-    const TH          = 0x01000000,
-    const TD          = 0x02000000,
-    const GROUP_TABLE = 0x03C00000,
+    const BBCODE_TABLE       = 0x00400000,
+    const BBCODE_TR          = 0x00800000,
+    const BBCODE_TH          = 0x01000000,
+    const BBCODE_TD          = 0x02000000,
+    const BBCODE_GROUP_TABLE = 0x03C00000,
 
-    const DEF_SIMPLE     = B.bits | I.bits | U.bits | S.bits | SUP.bits |
-        SUB.bits | COLOR.bits | URL.bits,
-    const DEF_SIMPLE_IMG = DEF_SIMPLE.bits | IMAGE.bits,
-    const DEF_EXTENDED   = GROUP_TEXT.bits | GROUP_ALIGN.bits | URL.bits |
-        IMAGE.bits | HR.bits | GROUP_LIST.bits | GROUP_TABLE.bits
+    const BBCODE_DEF_SIMPLE     = BBCODE_B.bits | BBCODE_I.bits | BBCODE_U.bits |
+        BBCODE_S.bits | BBCODE_SUP.bits | BBCODE_SUB.bits | BBCODE_COLOR.bits |
+        BBCODE_URL.bits,
+    const BBCODE_DEF_SIMPLE_IMG = BBCODE_DEF_SIMPLE.bits | BBCODE_IMAGE.bits,
+    const BBCODE_DEF_EXTENDED   = BBCODE_GROUP_TEXT.bits | BBCODE_GROUP_ALIGN.bits |
+        BBCODE_URL.bits | BBCODE_IMAGE.bits | BBCODE_HR.bits | BBCODE_GROUP_LIST.bits |
+        BBCODE_GROUP_TABLE.bits
 }}
 
 // As they are only typedefs and I didn't found any usage, I'll just leave them here for now

@@ -18,6 +18,7 @@ pub enum Error
     CommandNotFount                             = 0x0100,
     UnableToBindNetworkPort                     = 0x0101,
     NoNetworkPortAvailable                      = 0x0102,
+    PortAlreadyInUse                            = 0x103,
 
     /// Client
     ClientInvalidId                             = 0x0200,
@@ -80,7 +81,7 @@ pub enum Error
     DatabaseConstraint                          = 0x0504,
     DatabaseReinvoke                            = 0x0505,
 
-    // Parameter
+    /// Parameter
     ParameterQuote                              = 0x0600,
     ParameterInvalidCount                       = 0x0601,
     ParameterInvalid                            = 0x0602,
@@ -104,6 +105,7 @@ pub enum Error
     ServerlibraryNotInitialised                 = 0x070a,
     WhisperTooManyTargets                       = 0x070b,
     WhisperNoTargets                            = 0x070c,
+    ConnectionIpProtocolMissing                 = 0x070d,
 
     /// File transfer
     FileInvalidName                             = 0x0800,

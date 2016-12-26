@@ -24,3 +24,11 @@ pub enum ConnectStatus {
     /// We are CONNECTED and we have the client and channels available
     ConnectionEstablished
 }
+
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum LocalTestMode {
+    Off                 = 0,
+    VoiceLocalOnly      = 1,
+    VoiceLocalAndRemote = 2
+}
