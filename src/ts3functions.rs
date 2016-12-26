@@ -59,7 +59,7 @@ pub struct Ts3Functions
 
     /// Playback
     pub get_playback_config_value_as_float:             extern fn(server_connection_handler_id: u64, ident: *const c_char, result: *mut c_float) -> c_uint,
-    pub set_playback_config_value:                      extern fn(server_connection_handler_id: u64, ident: *const c_char, value: *const c_char) -> c_uint, 
+    pub set_playback_config_value:                      extern fn(server_connection_handler_id: u64, ident: *const c_char, value: *const c_char) -> c_uint,
     pub set_client_volume_modifier:                     extern fn(server_connection_handler_id: u64, client_id: u16, value: c_float) -> c_uint,
 
     /// Recording
@@ -75,7 +75,7 @@ pub struct Ts3Functions
     /// Interaction with the server
     pub start_connection:                               extern fn(server_connection_handler_id: u64, identity: *const c_char, ip: *const c_char, port: c_uint, nickname: *const c_char, default_channel_array: *const *const c_char, default_channel_password: *const c_char, server_password: *const c_char) -> c_uint,
     pub stop_connection:                                extern fn(server_connection_handler_id: u64, quit_message: *const c_char) -> c_uint,
-    pub request_client_move:                            extern fn(server_connection_handler_id: u64, client_id: u16, new_channel_id: u64, password: *const c_char, return_code: *const c_char) -> c_uint, 
+    pub request_client_move:                            extern fn(server_connection_handler_id: u64, client_id: u16, new_channel_id: u64, password: *const c_char, return_code: *const c_char) -> c_uint,
     pub request_client_variables:                       extern fn(server_connection_handler_id: u64, client_id: u16, return_code: *const c_char) -> c_uint,
     pub request_client_kick_from_channel:               extern fn(server_connection_handler_id: u64, client_id: u16, kick_reason: *const c_char, return_code: *const c_char) -> c_uint,
     pub request_client_kick_from_server:                extern fn(server_connection_handler_id: u64, client_id: u16, kick_reason: *const c_char, return_code: *const c_char) -> c_uint,
@@ -242,7 +242,7 @@ pub struct Ts3Functions
     pub get_app_path:                                   extern fn(path: *mut c_char, max_len: size_t),
     pub get_resources_path:                             extern fn(path: *mut c_char, max_len: size_t),
     pub get_config_path:                                extern fn(path: *mut c_char, max_len: size_t),
-    pub get_plugin_path:                                extern fn(path: *mut c_char, max_len: size_t),
+    pub get_plugin_path:                                extern fn(path: *mut c_char, max_len: size_t, plugin_id: *const c_char),
     pub get_current_server_connection_handler_id:       extern fn() -> u64,
     pub print_message:                                  extern fn(server_connection_handler_id: u64, message: *const c_char, message_target: MessageTarget),
     pub print_message_to_current_tab:                   extern fn(message: *const c_char),
