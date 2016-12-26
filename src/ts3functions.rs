@@ -1,4 +1,4 @@
-use libc::*;
+use std::os::raw::*;
 
 use public_definitions::*;
 use plugin_definitions::*;
@@ -107,25 +107,25 @@ pub struct Ts3Functions
     pub get_client_id:                                  extern fn(server_connection_handler_id: u64, result: *mut u16) -> c_uint,
 
     /// Client info
-    pub get_client_self_variable_as_int:                extern fn(server_connection_handler_id: u64, flag: size_t, result: *mut c_int) -> c_uint,
-    pub get_client_self_variable_as_string:             extern fn(server_connection_handler_id: u64, flag: size_t, result: *mut *mut c_char) -> c_uint,
-    pub set_client_self_variable_as_int:                extern fn(server_connection_handler_id: u64, flag: size_t, value: c_int) -> c_uint,
-    pub set_client_self_variable_as_string:             extern fn(server_connection_handler_id: u64, flag: size_t, value: *const c_char) -> c_uint,
+    pub get_client_self_variable_as_int:                extern fn(server_connection_handler_id: u64, flag: usize, result: *mut c_int) -> c_uint,
+    pub get_client_self_variable_as_string:             extern fn(server_connection_handler_id: u64, flag: usize, result: *mut *mut c_char) -> c_uint,
+    pub set_client_self_variable_as_int:                extern fn(server_connection_handler_id: u64, flag: usize, value: c_int) -> c_uint,
+    pub set_client_self_variable_as_string:             extern fn(server_connection_handler_id: u64, flag: usize, value: *const c_char) -> c_uint,
     pub flush_client_self_updates:                      extern fn(server_connection_handler_id: u64, return_code: *const c_char) -> c_uint,
-    pub get_client_variable_as_int:                     extern fn(server_connection_handler_id: u64, client_id: u16, flag: size_t, result: *mut c_int) -> c_uint,
-    pub get_client_variable_as_uint64:                  extern fn(server_connection_handler_id: u64, client_id: u16, flag: size_t, result: *mut u64) -> c_uint,
-    pub get_client_variable_as_string:                  extern fn(server_connection_handler_id: u64, client_id: u16, flag: size_t, result: *mut *mut c_char) -> c_uint,
+    pub get_client_variable_as_int:                     extern fn(server_connection_handler_id: u64, client_id: u16, flag: usize, result: *mut c_int) -> c_uint,
+    pub get_client_variable_as_uint64:                  extern fn(server_connection_handler_id: u64, client_id: u16, flag: usize, result: *mut u64) -> c_uint,
+    pub get_client_variable_as_string:                  extern fn(server_connection_handler_id: u64, client_id: u16, flag: usize, result: *mut *mut c_char) -> c_uint,
     pub get_client_list:                                extern fn(server_connection_handler_id: u64, result: *mut *mut u16) -> c_uint,
     pub get_channel_of_client:                          extern fn(server_connection_handler_id: u64, client_id: u16, result: *mut u64) -> c_uint,
 
     /// Channel info
-    pub get_channel_variable_as_int:                    extern fn(server_connection_handler_id: u64, channel_id: u64, flag: size_t, result: *mut c_int) -> c_uint,
-    pub get_channel_variable_as_uint64:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: size_t, result: *mut u64) -> c_uint,
-    pub get_channel_variable_as_string:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: size_t, result: *mut *mut c_char) -> c_uint,
+    pub get_channel_variable_as_int:                    extern fn(server_connection_handler_id: u64, channel_id: u64, flag: usize, result: *mut c_int) -> c_uint,
+    pub get_channel_variable_as_uint64:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: usize, result: *mut u64) -> c_uint,
+    pub get_channel_variable_as_string:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: usize, result: *mut *mut c_char) -> c_uint,
     pub get_channel_id_from_channel_names:              extern fn(server_connection_handler_id: u64, channel_name_array: *mut *mut c_char, result: *mut u64) -> c_uint,
-    pub set_channel_variable_as_int:                    extern fn(server_connection_handler_id: u64, channel_id: u64, flag: size_t, value: c_int) -> c_uint,
-    pub set_channel_variable_as_uint64:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: size_t, value: u64) -> c_uint,
-    pub set_channel_variable_as_string:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: size_t, value: *const c_char) -> c_uint,
+    pub set_channel_variable_as_int:                    extern fn(server_connection_handler_id: u64, channel_id: u64, flag: usize, value: c_int) -> c_uint,
+    pub set_channel_variable_as_uint64:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: usize, value: u64) -> c_uint,
+    pub set_channel_variable_as_string:                 extern fn(server_connection_handler_id: u64, channel_id: u64, flag: usize, value: *const c_char) -> c_uint,
     pub flush_channel_updates:                          extern fn(server_connection_handler_id: u64, channel_id: u64, return_code: *const c_char) -> c_uint,
     pub flush_channel_creation:                         extern fn(server_connection_handler_id: u64, channel_id: u64, return_code: *const c_char) -> c_uint,
     pub get_channel_list:                               extern fn(server_connection_handler_id: u64, result: *mut *mut u64) -> c_uint,
@@ -134,16 +134,16 @@ pub struct Ts3Functions
 
     /// Server info
     pub get_server_connection_handler_list:             extern fn(result: *mut *mut u64) -> c_uint,
-    pub get_server_variable_as_int:                     extern fn(server_connection_handler_id: u64, flag: size_t, result: *mut c_int) -> c_uint,
-    pub get_server_variable_as_uint64:                  extern fn(server_connection_handler_id: u64, flag: size_t, result: *mut u64) -> c_uint,
-    pub get_server_variable_as_string:                  extern fn(server_connection_handler_id: u64, flag: size_t, result: *mut *mut c_char) -> c_uint,
+    pub get_server_variable_as_int:                     extern fn(server_connection_handler_id: u64, flag: usize, result: *mut c_int) -> c_uint,
+    pub get_server_variable_as_uint64:                  extern fn(server_connection_handler_id: u64, flag: usize, result: *mut u64) -> c_uint,
+    pub get_server_variable_as_string:                  extern fn(server_connection_handler_id: u64, flag: usize, result: *mut *mut c_char) -> c_uint,
     pub request_server_variables:                       extern fn(server_connection_handler_id: u64) -> c_uint,
 
     /// Connection info
     pub get_connection_status:                          extern fn(server_connection_handler_id: u64, result: *mut c_int) -> c_uint,
-    pub get_connection_variable_as_uint64:              extern fn(server_connection_handler_id: u64, client_id: u16, flag: size_t, result: *mut u64) -> c_uint,
-    pub get_connection_variable_as_double:              extern fn(server_connection_handler_id: u64, client_id: u16, flag: size_t, result: *mut c_double) -> c_uint,
-    pub get_connection_variable_as_string:              extern fn(server_connection_handler_id: u64, client_id: u16, flag: size_t, result: *mut *mut c_char) -> c_uint,
+    pub get_connection_variable_as_uint64:              extern fn(server_connection_handler_id: u64, client_id: u16, flag: usize, result: *mut u64) -> c_uint,
+    pub get_connection_variable_as_double:              extern fn(server_connection_handler_id: u64, client_id: u16, flag: usize, result: *mut c_double) -> c_uint,
+    pub get_connection_variable_as_string:              extern fn(server_connection_handler_id: u64, client_id: u16, flag: usize, result: *mut *mut c_char) -> c_uint,
     pub clean_up_connection_info:                       extern fn(server_connection_handler_id: u64, client_id: u16) -> c_uint,
 
     /// Client related
@@ -234,34 +234,34 @@ pub struct Ts3Functions
     pub request_permission_overview:                    extern fn(server_connection_handler_id: u64, client_dbid: u64, channel_id: u64, return_code: *const c_char) -> c_uint,
 
     /// Helper functions
-    pub client_property_string_to_flag:                 extern fn(client_property_string: *const c_char, result_flag: *mut size_t) -> c_uint,
-    pub channel_property_string_to_flag:                extern fn(channel_property_string: *const c_char, result_flag: *mut size_t) -> c_uint,
-    pub server_property_string_to_flag:                 extern fn(server_property_string: *const c_char, result_flag: *mut size_t) -> c_uint,
+    pub client_property_string_to_flag:                 extern fn(client_property_string: *const c_char, result_flag: *mut usize) -> c_uint,
+    pub channel_property_string_to_flag:                extern fn(channel_property_string: *const c_char, result_flag: *mut usize) -> c_uint,
+    pub server_property_string_to_flag:                 extern fn(server_property_string: *const c_char, result_flag: *mut usize) -> c_uint,
 
     /// Client functions
-    pub get_app_path:                                   extern fn(path: *mut c_char, max_len: size_t),
-    pub get_resources_path:                             extern fn(path: *mut c_char, max_len: size_t),
-    pub get_config_path:                                extern fn(path: *mut c_char, max_len: size_t),
-    pub get_plugin_path:                                extern fn(path: *mut c_char, max_len: size_t, plugin_id: *const c_char),
+    pub get_app_path:                                   extern fn(path: *mut c_char, max_len: usize),
+    pub get_resources_path:                             extern fn(path: *mut c_char, max_len: usize),
+    pub get_config_path:                                extern fn(path: *mut c_char, max_len: usize),
+    pub get_plugin_path:                                extern fn(path: *mut c_char, max_len: usize, plugin_id: *const c_char),
     pub get_current_server_connection_handler_id:       extern fn() -> u64,
     pub print_message:                                  extern fn(server_connection_handler_id: u64, message: *const c_char, message_target: MessageTarget),
     pub print_message_to_current_tab:                   extern fn(message: *const c_char),
-    pub urls_to_bb:                                     extern fn(text: *const c_char, result: *mut c_char, max_len: size_t),
+    pub urls_to_bb:                                     extern fn(text: *const c_char, result: *mut c_char, max_len: usize),
     pub send_plugin_command:                            extern fn(server_connection_handler_id: u64, plugin_id: *const c_char, command: *const c_char, target_mode: c_int, target_ids: *const u16, return_code: *const c_char),
-    pub get_directories:                                extern fn(path: *const c_char, result: *mut c_char, max_len: size_t),
-    pub get_server_connect_info:                        extern fn(sc_handler_id: u64, host: *mut c_char, port: *mut c_ushort, password: *mut c_char, max_len: size_t) -> c_uint,
-    pub get_channel_connection_info:                    extern fn(sc_handler_id: u64, channel_id: u64, path: *mut c_char, password: *mut c_char, max_len: size_t) -> c_uint,
-    pub create_return_code:                             extern fn(plugin_id: *const c_char, return_code: *mut c_char, max_len: size_t),
+    pub get_directories:                                extern fn(path: *const c_char, result: *mut c_char, max_len: usize),
+    pub get_server_connect_info:                        extern fn(sc_handler_id: u64, host: *mut c_char, port: *mut c_ushort, password: *mut c_char, max_len: usize) -> c_uint,
+    pub get_channel_connection_info:                    extern fn(sc_handler_id: u64, channel_id: u64, path: *mut c_char, password: *mut c_char, max_len: usize) -> c_uint,
+    pub create_return_code:                             extern fn(plugin_id: *const c_char, return_code: *mut c_char, max_len: usize),
     pub request_info_update:                            extern fn(sc_handler_id: u64, item_type: ItemType, item_id: u64) -> c_uint,
     pub get_server_version:                             extern fn(sc_handler_id: u64) -> u64,
     pub is_whispering:                                  extern fn(sc_handler_id: u64, client_id: u16, result: *mut c_int) -> c_uint,
     pub is_receiving_whisper:                           extern fn(sc_handler_id: u64, client_id: u16, result: *mut c_int) -> c_uint,
-    pub get_avatar:                                     extern fn(sc_handler_id: u64, client_id: u16, result: *mut c_char, max_len: size_t) -> c_uint,
+    pub get_avatar:                                     extern fn(sc_handler_id: u64, client_id: u16, result: *mut c_char, max_len: usize) -> c_uint,
     pub set_plugin_menu_enabled:                        extern fn(plugin_id: *const c_char, menu_id: c_int, enabled: c_int),
     pub show_hotkey_setup:                              extern fn(),
     pub request_hotkey_input_dialog:                    extern fn(plugin_id: *const c_char, *const c_char, c_int, *mut c_void),
-    pub get_hotkey_from_keyword:                        extern fn(plugin_id: *const c_char, keywords: *mut *const c_char, hotkeys: *mut *mut c_char, array_len: size_t, hotkey_buf_size: size_t) -> c_uint,
-    pub get_client_display_name:                        extern fn(sc_handler_id: u64, client_id: u16, result: *mut c_char, max_len: size_t) -> c_uint,
+    pub get_hotkey_from_keyword:                        extern fn(plugin_id: *const c_char, keywords: *mut *const c_char, hotkeys: *mut *mut c_char, array_len: usize, hotkey_buf_size: usize) -> c_uint,
+    pub get_client_display_name:                        extern fn(sc_handler_id: u64, client_id: u16, result: *mut c_char, max_len: usize) -> c_uint,
     pub get_bookmark_list:                              extern fn(list: *mut *mut BookmarkList) -> c_uint,
     pub get_profile_list:                               extern fn(profile: GuiProfile, default_profile_idx: *mut c_int, result: *mut *mut *mut c_char) -> c_uint,
     pub gui_connect:                                    extern fn(connect_tab: ConnectTab, server_label: *const c_char, server_address: *const c_char, server_password: *const c_char, nickname: *const c_char, channel: *const c_char, channel_password: *const c_char, capture_profile: *const c_char, playback_profile: *const c_char, hotkey_profile: *const c_char, sound_profile: *const c_char, user_identity: *const c_char, one_time_key: *const c_char, phonetic_name: *const c_char, sc_handler_id: *mut u64) -> c_uint,

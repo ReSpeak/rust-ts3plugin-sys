@@ -2,7 +2,7 @@
 
 //! This file contains the definitions of plugin_definitions.h
 
-use libc::*;
+use std::os::raw::*;
 
 pub const MENU_BUFSZ:   usize = 128;
 pub const HOTKEY_BUFSZ: usize = 128;

@@ -13,5 +13,4 @@ license = "MIT/Apache-2.0"
 name = "ts3plugin_sys"
 
 [dependencies]
-libc = "0.2"
 bitflags = "0.7"
