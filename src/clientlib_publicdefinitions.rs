@@ -19,9 +19,9 @@ pub enum ConnectStatus {
 	Connecting,
 	/// The server has accepted us, we can talk and hear and we got a clientID, but we don't have the channels and clients yet, we can get server infos (welcome msg etc.)
 	Connected,
-	/// We are CONNECTED and we are visible
+	/// We are connected and we are visible
 	ConnectionEstablishing,
-	/// We are CONNECTED and we have the client and channels available
+	/// We are connected and we have the client and channels available
 	ConnectionEstablished,
 }
 
