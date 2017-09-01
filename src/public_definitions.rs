@@ -38,28 +38,28 @@ pub const MAX_VARIABLES_EXPORT_COUNT:                usize = 64;
 
 /// Speaker locations used by some sound callbacks
 bitflags! {
-pub flags Speaker: c_uint {
-	const SPEAKER_FRONT_LEFT            = 0x00001,
-	const SPEAKER_FRONT_RIGHT           = 0x00002,
-	const SPEAKER_FRONT_CENTER          = 0x00004,
-	const SPEAKER_LOW_FREQUENCY         = 0x00008,
-	const SPEAKER_BACK_LEFT             = 0x00010,
-	const SPEAKER_BACK_RIGHT            = 0x00020,
-	const SPEAKER_FRONT_LEFT_OF_CENTER  = 0x00040,
-	const SPEAKER_FRONT_RIGHT_OF_CENTER = 0x00080,
-	const SPEAKER_BACK_CENTER           = 0x00100,
-	const SPEAKER_SIDE_LEFT             = 0x00200,
-	const SPEAKER_SIDE_RIGHT            = 0x00400,
-	const SPEAKER_TOP_CENTER            = 0x00800,
-	const SPEAKER_TOP_FRONT_LEFT        = 0x01000,
-	const SPEAKER_TOP_FRONT_CENTER      = 0x02000,
-	const SPEAKER_TOP_FRONT_RIGHT       = 0x04000,
-	const SPEAKER_TOP_BACK_LEFT         = 0x08000,
-	const SPEAKER_TOP_BACK_CENTER       = 0x10000,
-	const SPEAKER_TOP_BACK_RIGHT        = 0x20000,
-	const SPEAKER_HEADPHONES_LEFT       = 0x10000000,
-	const SPEAKER_HEADPHONES_RIGHT      = 0x20000000,
-	const SPEAKER_MONO                  = 0x40000000,
+pub struct Speaker: c_uint {
+	const SPEAKER_FRONT_LEFT            = 0x00001;
+	const SPEAKER_FRONT_RIGHT           = 0x00002;
+	const SPEAKER_FRONT_CENTER          = 0x00004;
+	const SPEAKER_LOW_FREQUENCY         = 0x00008;
+	const SPEAKER_BACK_LEFT             = 0x00010;
+	const SPEAKER_BACK_RIGHT            = 0x00020;
+	const SPEAKER_FRONT_LEFT_OF_CENTER  = 0x00040;
+	const SPEAKER_FRONT_RIGHT_OF_CENTER = 0x00080;
+	const SPEAKER_BACK_CENTER           = 0x00100;
+	const SPEAKER_SIDE_LEFT             = 0x00200;
+	const SPEAKER_SIDE_RIGHT            = 0x00400;
+	const SPEAKER_TOP_CENTER            = 0x00800;
+	const SPEAKER_TOP_FRONT_LEFT        = 0x01000;
+	const SPEAKER_TOP_FRONT_CENTER      = 0x02000;
+	const SPEAKER_TOP_FRONT_RIGHT       = 0x04000;
+	const SPEAKER_TOP_BACK_LEFT         = 0x08000;
+	const SPEAKER_TOP_BACK_CENTER       = 0x10000;
+	const SPEAKER_TOP_BACK_RIGHT        = 0x20000;
+	const SPEAKER_HEADPHONES_LEFT       = 0x10000000;
+	const SPEAKER_HEADPHONES_RIGHT      = 0x20000000;
+	const SPEAKER_MONO                  = 0x40000000;
 }}
 
 #[repr(C)]
@@ -928,43 +928,43 @@ pub enum LicenseViolationType {
 }
 
 bitflags! {
-pub flags BBCodeTags: u32 {
-	const BBCODE_B           = 0x00000001,
-	const BBCODE_I           = 0x00000002,
-	const BBCODE_U           = 0x00000004,
-	const BBCODE_S           = 0x00000008,
-	const BBCODE_SUP         = 0x00000010,
-	const BBCODE_SUB         = 0x00000020,
-	const BBCODE_COLOR       = 0x00000040,
-	const BBCODE_SIZE        = 0x00000080,
-	const BBCODE_GROUP_TEXT  = 0x000000FF,
+pub struct BBCodeTags: u32 {
+	const BBCODE_B           = 0x00000001;
+	const BBCODE_I           = 0x00000002;
+	const BBCODE_U           = 0x00000004;
+	const BBCODE_S           = 0x00000008;
+	const BBCODE_SUP         = 0x00000010;
+	const BBCODE_SUB         = 0x00000020;
+	const BBCODE_COLOR       = 0x00000040;
+	const BBCODE_SIZE        = 0x00000080;
+	const BBCODE_GROUP_TEXT  = 0x000000FF;
 
-	const BBCODE_LEFT        = 0x00001000,
-	const BBCODE_RIGHT       = 0x00002000,
-	const BBCODE_CENTER      = 0x00004000,
-	const BBCODE_GROUP_ALIGN = 0x00007000,
+	const BBCODE_LEFT        = 0x00001000;
+	const BBCODE_RIGHT       = 0x00002000;
+	const BBCODE_CENTER      = 0x00004000;
+	const BBCODE_GROUP_ALIGN = 0x00007000;
 
-	const BBCODE_URL         = 0x00010000,
-	const BBCODE_IMAGE       = 0x00020000,
-	const BBCODE_HR          = 0x00040000,
+	const BBCODE_URL         = 0x00010000;
+	const BBCODE_IMAGE       = 0x00020000;
+	const BBCODE_HR          = 0x00040000;
 
-	const BBCODE_LIST        = 0x00100000,
-	const BBCODE_LISTITEM    = 0x00200000,
-	const BBCODE_GROUP_LIST  = 0x00300000,
+	const BBCODE_LIST        = 0x00100000;
+	const BBCODE_LISTITEM    = 0x00200000;
+	const BBCODE_GROUP_LIST  = 0x00300000;
 
-	const BBCODE_TABLE       = 0x00400000,
-	const BBCODE_TR          = 0x00800000,
-	const BBCODE_TH          = 0x01000000,
-	const BBCODE_TD          = 0x02000000,
-	const BBCODE_GROUP_TABLE = 0x03C00000,
+	const BBCODE_TABLE       = 0x00400000;
+	const BBCODE_TR          = 0x00800000;
+	const BBCODE_TH          = 0x01000000;
+	const BBCODE_TD          = 0x02000000;
+	const BBCODE_GROUP_TABLE = 0x03C00000;
 
 	const BBCODE_DEF_SIMPLE     = BBCODE_B.bits | BBCODE_I.bits | BBCODE_U.bits |
 		BBCODE_S.bits | BBCODE_SUP.bits | BBCODE_SUB.bits | BBCODE_COLOR.bits |
-		BBCODE_URL.bits,
-	const BBCODE_DEF_SIMPLE_IMG = BBCODE_DEF_SIMPLE.bits | BBCODE_IMAGE.bits,
+		BBCODE_URL.bits;
+	const BBCODE_DEF_SIMPLE_IMG = BBCODE_DEF_SIMPLE.bits | BBCODE_IMAGE.bits;
 	const BBCODE_DEF_EXTENDED   = BBCODE_GROUP_TEXT.bits | BBCODE_GROUP_ALIGN.bits |
 		BBCODE_URL.bits | BBCODE_IMAGE.bits | BBCODE_HR.bits | BBCODE_GROUP_LIST.bits |
-		BBCODE_GROUP_TABLE.bits,
+		BBCODE_GROUP_TABLE.bits;
 }}
 
 // As they are only typedefs and I didn't found any usage, I'll just leave them here for now

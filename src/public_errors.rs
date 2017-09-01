@@ -1,6 +1,7 @@
 #![allow(dead_code)]
-
 //! This file contains the definitions of public_erros.h and public_erros_rare.h
+
+use ::std::fmt;
 
 #[repr(u32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -241,4 +242,16 @@ pub enum Error {
 	ProvisioningInvalidTimeout                  = 0x11_18,
 	ProvisioningTs3severNotFound                = 0x11_19,
 	ProvisioningNoPermission                    = 0x11_1A,
+}
+
+impl fmt::Display for Error {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		fmt::Debug::fmt(self, f)
+	}
+}
+
+impl ::std::error::Error for Error {
+	fn description(&self) -> &str {
+		"TeamSpeak error"
+	}
 }
