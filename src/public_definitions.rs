@@ -25,19 +25,19 @@ pub const MAX_SIZE_OFFLINE_MESSAGE:                  usize = 4096;
 pub const MAX_SIZE_OFFLINE_MESSAGE_SUBJECT:          usize = 200;
 
 /// Limited length, measured in bytes (UTF-8 encoded)
-pub const MAX_SIZE_TEXTMESSAGE:                      usize = 1024;
+pub const MAX_SIZE_TEXTMESSAGE:                      usize = 8192;
 pub const MAX_SIZE_CHANNEL_TOPIC:                    usize =  255;
 pub const MAX_SIZE_CHANNEL_DESCRIPTION:              usize = 8192;
 pub const MAX_SIZE_VIRTUALSERVER_WELCOMEMESSAGE:     usize = 1024;
-pub const MAX_SIZE_PLUGIN_COMMAND:                   usize = 1024 * 8;
 pub const MAX_SIZE_VIRTUALSERVER_HOSTBANNER_GFX_URL: usize = 2000;
+pub const SIZE_MYTSID:                               usize = 44;
 
 /// Minimum amount of seconds before a clientID that was in use can be assigned to a new client
 pub const MIN_SECONDS_CLIENTID_REUSE:                usize = 300;
 pub const MAX_VARIABLES_EXPORT_COUNT:                usize = 64;
 
-/// Speaker locations used by some sound callbacks
 bitflags! {
+/// Speaker locations used by some sound callbacks
 pub struct Speaker: c_uint {
 	const SPEAKER_FRONT_LEFT            = 0x00001;
 	const SPEAKER_FRONT_RIGHT           = 0x00002;
@@ -232,8 +232,13 @@ pub enum ChannelProperties {
 	/// Available for all channels that are "in view", always up-to-date
 	IconId,
 	/// Available for all channels that are "in view", always up-to-date
-	FlagPrivate,
+	BannerGfxUrl,
+	/// Available for all channels that are "in view", always up-to-date
+	BannerMode,
 	Endmarker,
+
+	/// (for clientlibv2) expected delete time in monotonic clock seconds or 0 if nothing is expected
+	DeleteDelayDeadline = 127,
 }
 
 #[repr(C)]
@@ -281,9 +286,10 @@ pub enum ClientProperties {
 	VersionSign,
 	/// SDK use, not used by teamspeak. Hash is provided by an outside source. A channel will use the security salt + other client data to calculate a hash, which must be the same as the one provided here.
 	SecurityHash,
+	/// Internal use
+	EncryptionCiphers,
 
 	/// Rare properties
-	Dummy3,
 	Dummy4,
 	Dummy5,
 	Dummy6,
@@ -356,7 +362,16 @@ pub enum ClientProperties {
 	ChannelGroupInheritedChannelId,
 	/// Automatically up-to-date for any client "in view", stores icons for partner badges
 	Badges,
+	/// Automatically up-to-date for any client "in view"
+	MyteamspeakId,
+	/// Automatically up-to-date for any client "in view"
+	Integrations,
+	/// Stores info from the myts server and contains the subscription info
+	ActiveIntegrationsInfo,
 	Endmarker,
+
+	/// (for clientlibv2) unique hardware id
+	HwId = 127,
 }
 
 #[repr(C)]
@@ -386,9 +401,10 @@ pub enum VirtualServerProperties {
 	Uptime,
 	/// Available and always up-to-date when connected
 	CodecEncryptionMode,
+	/// Internal use
+	EncryptionCiphers,
 
 	/// Rare properties
-	Dummy0,
 	Dummy1,
 	Dummy2,
 	Dummy3,
@@ -521,6 +537,14 @@ pub enum VirtualServerProperties {
 	MinIosVersion,
 	/// Only available on request (=> requestServerVariables)
 	MinWinphoneVersion,
+	/// Available when connected, always up-to-date
+	Nickname,
+	/// Internal use, contains base64 encoded token data
+	AccountingToken,
+	/// Internal use
+	ProtocolVerifyKeypair,
+	/// Only available on request (=> requestServerVariables)
+	AntifloodPointsNeededPluginBlock,
 	Endmarker,
 }
 
@@ -916,15 +940,15 @@ pub enum ServerInstancePropertiesRare {
 	TemplateChannelDefaultGroup,
 	PermissionsVersion,
 	PendingConnectionsPerIp,
+	ServerqueryMaxConnectionsPerIp,
 	Endmarker,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum LicenseViolationType {
-	No = 0,
-	Slot,
-	SlotSuspicion,
+pub enum LicenseIssue {
+	Blacklisted,
+	Greylisted,
 }
 
 bitflags! {
@@ -958,14 +982,24 @@ pub struct BBCodeTags: u32 {
 	const BBCODE_TD          = 0x02000000;
 	const BBCODE_GROUP_TABLE = 0x03C00000;
 
-	const BBCODE_DEF_SIMPLE     = BBCODE_B.bits | BBCODE_I.bits | BBCODE_U.bits |
-		BBCODE_S.bits | BBCODE_SUP.bits | BBCODE_SUB.bits | BBCODE_COLOR.bits |
-		BBCODE_URL.bits;
-	const BBCODE_DEF_SIMPLE_IMG = BBCODE_DEF_SIMPLE.bits | BBCODE_IMAGE.bits;
-	const BBCODE_DEF_EXTENDED   = BBCODE_GROUP_TEXT.bits | BBCODE_GROUP_ALIGN.bits |
-		BBCODE_URL.bits | BBCODE_IMAGE.bits | BBCODE_HR.bits | BBCODE_GROUP_LIST.bits |
-		BBCODE_GROUP_TABLE.bits;
+	const BBCODE_DEF_SIMPLE     = Self::BBCODE_B.bits | Self::BBCODE_I.bits
+		| Self::BBCODE_U.bits | Self::BBCODE_S.bits | Self::BBCODE_SUP.bits
+		| Self::BBCODE_SUB.bits | Self::BBCODE_COLOR.bits
+		| Self::BBCODE_URL.bits;
+	const BBCODE_DEF_SIMPLE_IMG = Self::BBCODE_DEF_SIMPLE.bits
+		| Self::BBCODE_IMAGE.bits;
+	const BBCODE_DEF_EXTENDED   = Self::BBCODE_GROUP_TEXT.bits
+		| Self::BBCODE_GROUP_ALIGN.bits | Self::BBCODE_URL.bits
+		| Self::BBCODE_IMAGE.bits | Self::BBCODE_HR.bits
+		| Self::BBCODE_GROUP_LIST.bits | Self::BBCODE_GROUP_TABLE.bits;
 }}
+
+bitflags! {
+pub struct MytsDataUnsetFlags: u32 {
+	const BADGES = 1;
+	const AVATAR = 2;
+}}
+
 
 // As they are only typedefs and I didn't found any usage, I'll just leave them here for now
 //typedef int(*ExtraBBCodeValidator)(void* userparam, const char* tag, const char* paramValue, int paramValueSize, const char* childValue, int childValueSize);

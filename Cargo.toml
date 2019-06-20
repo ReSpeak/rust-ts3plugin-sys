@@ -1,10 +1,9 @@
 [package]
 name = "ts3plugin-sys"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Flakebi <flakebi@t-online.de>"]
 description = "FFI bindings to the TeamSpeak3 plugin API"
 repository = "https://github.com/Flakebi/rust-ts3plugin-sys"
-documentation = "https://docs.rs/ts3plugin-sys"
 readme = "README.md"
 keywords = ["ffi", "plugin", "TeamSpeak3", "TS3"]
 categories = ["external-ffi-bindings"]
@@ -14,4 +13,4 @@ license = "MIT/Apache-2.0"
 name = "ts3plugin_sys"
 
 [dependencies]
-bitflags = "0.9"
+bitflags = "1"

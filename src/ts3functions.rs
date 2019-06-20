@@ -189,11 +189,11 @@ pub struct Ts3Functions {
 
 	/// Interacting with the server - banning
 	pub banclient:                                      extern fn(server_connection_handler_id: u64, client_id: u16, time_in_seconds: u64, ban_reason: *const c_char, return_code: *const c_char) -> c_uint,
-	pub banadd:                                         extern fn(server_connection_handler_id: u64, ip_reg_exp: *const c_char, name_regexp: *const c_char, unique_identity: *const c_char, time_in_seconds: u64, ban_reason: *const c_char, return_code: *const c_char) -> c_uint,
+	pub banadd:                                         extern fn(server_connection_handler_id: u64, ip_reg_exp: *const c_char, name_regexp: *const c_char, unique_identity: *const c_char, myts_id: *const c_char, time_in_seconds: u64, ban_reason: *const c_char, return_code: *const c_char) -> c_uint,
 	pub banclient_dbid:                                 extern fn(server_connection_handler_id: u64, client_dbid: u64, time_in_seconds: u64, ban_reason: *const c_char, return_code: *const c_char) -> c_uint,
 	pub bandel:                                         extern fn(server_connection_handler_id: u64, ban_id: u64, return_code: *const c_char) -> c_uint,
 	pub bandelall:                                      extern fn(server_connection_handler_id: u64, return_code: *const c_char) -> c_uint,
-	pub request_ban_list:                               extern fn(server_connection_handler_id: u64, return_code: *const c_char) -> c_uint,
+	pub request_ban_list:                               extern fn(server_connection_handler_id: u64, start: u64, duration: c_uint, return_code: *const c_char) -> c_uint,
 
 	/// Interacting with the server - complain
 	pub request_complain_add:                           extern fn(server_connection_handler_id: u64, target_client_database_id: u64, complain_reason: *const c_char, return_code: *const c_char) -> c_uint,

@@ -4,8 +4,13 @@ The documentation can be found here: [![At docs.rs](https://docs.rs/ts3plugin-sy
 
 A higher level library that depends on this ffi bindings is [ts3plugin](https://github.com/Flakebi/rust-ts3plugin).
 
+TeamSpeak 3.3 updates the plugin api version from 22 to 23.  
+Version 0.4 and above are compatible with this version.
+
+TeamSpeak 3.1.1 updates the plugin api version from 21 to 22 but stays backwards compatible so plugins with version 21 can still be loaded.
+
 TeamSpeak 3.1 updates the plugin api version from 20 to 21.  
-Version 0.2 and above are compatible with this version while version 0.1 is
+Version 0.2 and 0.3 are compatible with this version while version 0.1 is
 compatible with the api version 20.
 
 Usage
@@ -13,7 +18,7 @@ Usage
 Add the following to your `Cargo.toml`:
 ```toml
 [dependencies]
-ts3plugin-sys = "0.3"
+ts3plugin-sys = "0.4"
 ```
 
 License

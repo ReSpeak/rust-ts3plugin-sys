@@ -13,6 +13,8 @@ pub enum Error {
 	OkNoUpdate                                  = 0x0003,
 	DontNotify                                  = 0x0004,
 	LibTimeLimitReached                         = 0x0005,
+	OutOfMemory                                 = 0x0006,
+	Canceled                                    = 0x0007,
 
 	/// Dunno
 	CommandNotFount                             = 0x0100,
@@ -72,6 +74,8 @@ pub enum Error {
 	ServerModalQuit                             = 0x040c,
 	ServerVersionOutdated                       = 0x040d,
 	ServerDuplicatedRunning                     = 0x040e,
+	ServerTimeDifferenceTooLarge                = 0x040f,
+	ServerBlacklisted                           = 0x0410,
 
 	/// Database
 	Database                                    = 0x0500,
@@ -106,6 +110,8 @@ pub enum Error {
 	WhisperTooManyTargets                       = 0x070b,
 	WhisperNoTargets                            = 0x070c,
 	ConnectionIpProtocolMissing                 = 0x070d,
+	// 0x070e is reserved
+	IllegalServerLicense                        = 0x070f,
 
 	/// File transfer
 	FileInvalidName                             = 0x0800,
@@ -132,7 +138,6 @@ pub enum Error {
 	FileTransferClientQuotaExceeded             = 0x0815,
 	FileTransferReset                           = 0x0816,
 	FileTransferLimitReached                    = 0x0817,
-
 
 	/// Sound
 	SoundPreprocessorDisabled                   = 0x09_00,
@@ -177,6 +182,7 @@ pub enum Error {
 	PermissionsInsufficientPermissionPower      = 0x0a_0a,
 	PermissionsTemplateGroupIsUsed              = 0x0a_0b,
 	Permissions                                 = 0x0a_0c,
+	PermissionUsedByIntegration                 = 0x0a_0d,
 
 	/// Accounting
 	AccountingVirtualserverLimitReached         = 0x0b_00,
@@ -242,6 +248,30 @@ pub enum Error {
 	ProvisioningInvalidTimeout                  = 0x11_18,
 	ProvisioningTs3severNotFound                = 0x11_19,
 	ProvisioningNoPermission                    = 0x11_1A,
+
+	/// Mytsid - client
+	InvalidMytsidData                           = 0x12_00,
+	InvalidIntegration                          = 0x12_01,
+
+	/// Ed25519
+	Ed25519RngFail                              = 0x13_00,
+	Ed25519SignatureInvalid                     = 0x13_01,
+	Ed25519InvalidKey                           = 0x13_02,
+	Ed25519UnableToCreateValidKey               = 0x13_03,
+	Ed25519OutOfMemory                          = 0x13_04,
+	Ed25519Exists                               = 0x13_05,
+	Ed25519ReadBeyondEof                        = 0x13_06,
+	Ed25519WriteBeyondEof                       = 0x13_07,
+	Ed25519Version                              = 0x13_08,
+	Ed25519Invalid                              = 0x13_09,
+	Ed25519InvalidDate                          = 0x13_0a,
+	Ed25519Unauthorized                         = 0x13_0b,
+	Ed25519InvalidType                          = 0x13_0c,
+	Ed25519AddressNomatch                       = 0x13_0d,
+	Ed25519NotValidYet                          = 0x13_0e,
+	Ed25519Expired                              = 0x13_0f,
+	Ed25519IndexOutOfRange                      = 0x13_10,
+	Ed25519InvalidSize                          = 0x13_11,
 }
 
 impl fmt::Display for Error {
