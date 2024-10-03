@@ -1,7 +1,10 @@
+// Uses lots of alignment which rustfmt destroys
+#![cfg_attr(rustfmt, rustfmt::skip)]
+
 use std::os::raw::*;
 
-use public_definitions::*;
-use plugin_definitions::*;
+use crate::public_definitions::*;
+use crate::plugin_definitions::*;
 
 /// Functions exported to plugin from main binary
 #[repr(C)]

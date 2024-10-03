@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+// Uses lots of alignment which rustfmt destroys
+#![cfg_attr(rustfmt, rustfmt::skip)]
 
 //! This file contains the definitions of public_definitions.h and public_rare_definitions.h
 
@@ -38,6 +40,7 @@ pub const MAX_VARIABLES_EXPORT_COUNT:                usize = 64;
 
 bitflags! {
 /// Speaker locations used by some sound callbacks
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Clone, Copy)]
 pub struct Speaker: c_uint {
 	const SPEAKER_FRONT_LEFT            = 0x00001;
 	const SPEAKER_FRONT_RIGHT           = 0x00002;
@@ -982,16 +985,16 @@ pub struct BBCodeTags: u32 {
 	const BBCODE_TD          = 0x02000000;
 	const BBCODE_GROUP_TABLE = 0x03C00000;
 
-	const BBCODE_DEF_SIMPLE     = Self::BBCODE_B.bits | Self::BBCODE_I.bits
-		| Self::BBCODE_U.bits | Self::BBCODE_S.bits | Self::BBCODE_SUP.bits
-		| Self::BBCODE_SUB.bits | Self::BBCODE_COLOR.bits
-		| Self::BBCODE_URL.bits;
-	const BBCODE_DEF_SIMPLE_IMG = Self::BBCODE_DEF_SIMPLE.bits
-		| Self::BBCODE_IMAGE.bits;
-	const BBCODE_DEF_EXTENDED   = Self::BBCODE_GROUP_TEXT.bits
-		| Self::BBCODE_GROUP_ALIGN.bits | Self::BBCODE_URL.bits
-		| Self::BBCODE_IMAGE.bits | Self::BBCODE_HR.bits
-		| Self::BBCODE_GROUP_LIST.bits | Self::BBCODE_GROUP_TABLE.bits;
+	const BBCODE_DEF_SIMPLE     = Self::BBCODE_B.bits() | Self::BBCODE_I.bits()
+		| Self::BBCODE_U.bits() | Self::BBCODE_S.bits() | Self::BBCODE_SUP.bits()
+		| Self::BBCODE_SUB.bits() | Self::BBCODE_COLOR.bits()
+		| Self::BBCODE_URL.bits();
+	const BBCODE_DEF_SIMPLE_IMG = Self::BBCODE_DEF_SIMPLE.bits()
+		| Self::BBCODE_IMAGE.bits();
+	const BBCODE_DEF_EXTENDED   = Self::BBCODE_GROUP_TEXT.bits()
+		| Self::BBCODE_GROUP_ALIGN.bits() | Self::BBCODE_URL.bits()
+		| Self::BBCODE_IMAGE.bits() | Self::BBCODE_HR.bits()
+		| Self::BBCODE_GROUP_LIST.bits() | Self::BBCODE_GROUP_TABLE.bits();
 }}
 
 bitflags! {
