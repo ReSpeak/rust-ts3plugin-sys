@@ -75,7 +75,7 @@ pub enum ConnectStatus {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LocalTestMode {
-	Off                 = 0,
+	Off = 0,
 	VoiceLocalOnly,
 	VoiceLocalAndRemote,
 	TalkStatusChangesOnly,
@@ -709,25 +709,25 @@ pub enum VirtualServerProperties {
 	/// Only available on request (=> requestServerVariables)
 	AntifloodPointsNeededPluginBlock,
 	/// available when connected, not updated while connected
-    CapabilityExtensions,
-    /// Allowed filetransfer storage on this server (including chat attachments) in megabytes
-    StorageQuota,
-    /// internal use
-    WebrtcCertificate,
-    /// internal use
-    WebrtcPrivateKey,
-    /// the uuid of the server (uuid v5 of VIRTUALSERVER_UNIQUE_IDENTIFIER)
-    Uuid,
-    /// The domain which is responsible for this teamspeak server (which hosts its .well-known file)
-    AdministrativeDomain,
-    /// The canonical name under which the server is reachable
-    CanonicalName,
-    /// Only clients that have a valid mytsid can connect
-    MytsidConnectOnly,
-    /// How many matrix homebases this virtual server supports. -1 = no limit
-    MaxHomebases,
-    /// Allowed filetransfer storage for homebase attachments in megabytes
-    HomebaseStorageQuota,
+	CapabilityExtensions,
+	/// Allowed filetransfer storage on this server (including chat attachments) in megabytes
+	StorageQuota,
+	/// internal use
+	WebrtcCertificate,
+	/// internal use
+	WebrtcPrivateKey,
+	/// the uuid of the server (uuid v5 of VIRTUALSERVER_UNIQUE_IDENTIFIER)
+	Uuid,
+	/// The domain which is responsible for this teamspeak server (which hosts its .well-known file)
+	AdministrativeDomain,
+	/// The canonical name under which the server is reachable
+	CanonicalName,
+	/// Only clients that have a valid mytsid can connect
+	MytsidConnectOnly,
+	/// How many matrix homebases this virtual server supports. -1 = no limit
+	MaxHomebases,
+	/// Allowed filetransfer storage for homebase attachments in megabytes
+	HomebaseStorageQuota,
 	Endmarker,
 }
 

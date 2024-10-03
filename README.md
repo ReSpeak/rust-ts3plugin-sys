@@ -2,12 +2,13 @@ TS3Plugin-sys &emsp; [![Latest version](https://img.shields.io/crates/v/ts3plugi
 =============
 The documentation can be found here: [![At docs.rs](https://docs.rs/ts3plugin-sys/badge.svg)](https://docs.rs/ts3plugin-sys)
 
-A higher level library that depends on this ffi bindings is [ts3plugin](https://github.com/Flakebi/rust-ts3plugin).
+A higher level library that depends on this ffi bindings is [ts3plugin](https://github.com/ReSpeak/rust-ts3plugin).
 
-Version 0.5 is compatible with the plugin api version 26.
+TeamSpeak 3.6 updates the plugin api version to 26.  
+Version 0.5 is compatible with this version.
 
 TeamSpeak 3.3 updates the plugin api version from 22 to 23.  
-Version 0.4 and above are compatible with this version.
+Version 0.4 is compatible with this version.
 
 TeamSpeak 3.1.1 updates the plugin api version from 21 to 22 but stays backwards compatible so plugins with version 21 can still be loaded.
 
@@ -20,7 +21,7 @@ Usage
 Add the following to your `Cargo.toml`:
 ```toml
 [dependencies]
-ts3plugin-sys = "0.4"
+ts3plugin-sys = "0.5"
 ```
 
 License
