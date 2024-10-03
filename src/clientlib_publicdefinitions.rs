@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+// Uses lots of alignment which rustfmt destroys
+#![cfg_attr(rustfmt, rustfmt::skip)]
 
 //! This file contains the definitions of clientlib_publicdefinitions.h
 
@@ -29,6 +31,7 @@ pub enum ConnectStatus {
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LocalTestMode {
 	Off                 = 0,
-	VoiceLocalOnly      = 1,
-	VoiceLocalAndRemote = 2,
+	VoiceLocalOnly,
+	VoiceLocalAndRemote,
+	TalkStatusChangesOnly,
 }

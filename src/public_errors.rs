@@ -1,4 +1,7 @@
 #![allow(dead_code)]
+// Uses lots of alignment which rustfmt destroys
+#![cfg_attr(rustfmt, rustfmt::skip)]
+
 //! This file contains the definitions of public_erros.h and public_erros_rare.h
 
 use ::std::fmt;
@@ -76,6 +79,7 @@ pub enum Error {
 	ServerDuplicatedRunning                     = 0x040e,
 	ServerTimeDifferenceTooLarge                = 0x040f,
 	ServerBlacklisted                           = 0x0410,
+	ServerShutdown                              = 0x0411,
 
 	/// Database
 	Database                                    = 0x0500,

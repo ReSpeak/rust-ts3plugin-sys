@@ -271,4 +271,20 @@ pub struct Ts3Functions {
 	pub create_bookmark:                                extern fn(bookmarkuuid: *const c_char, server_label: *const c_char, server_address: *const c_char, server_password: *const c_char, nickname: *const c_char, channel: *const c_char, channel_password: *const c_char, capture_profile: *const c_char, playback_profile: *const c_char, hotkey_profile: *const c_char, sound_profile: *const c_char, unique_user_id: *const c_char, one_time_key: *const c_char, phonetic_name: *const c_char) -> c_uint,
 	pub get_permission_id_by_name:                      extern fn(server_connection_handler_id: u64, permission_name: *const c_char, result: *mut c_uint) -> c_uint,
 	pub get_client_needed_permission:                   extern fn(server_connection_handler_id: u64, permission_name: *const c_char, result: *mut c_int) -> c_uint,
+	pub notify_key_event:                               extern fn(plugin_id: *const c_char, key_identifier: *const c_char, up_down: c_int),
+
+	/// Recording
+	pub start_recording:                                extern fn(server_connection_handler_id: u64, multitrack: c_int, no_file_selector: c_int, path: *const c_char) -> c_uint,
+	pub stop_recording:                                 extern fn(server_connection_handler_id: u64) -> c_uint,
+
+	/// Convenience
+	pub request_clients_move:                           extern fn(server_connection_handler_id: u64, client_id_array: *const u16, new_channel_id: u64, password: *const c_char, return_code: *const c_char) -> c_uint,
+	pub request_clients_kick_from_channel:              extern fn(server_connection_handler_id: u64, client_id_array: *const u16, kick_reason: *const c_char, return_code: *const c_char) -> c_uint,
+	pub request_clients_kick_from_server:               extern fn(server_connection_handler_id: u64, client_id_array: *const u16, kick_reason: *const c_char, return_code: *const c_char) -> c_uint,
+	pub request_mute_clients_temporary:                 extern fn(server_connection_handler_id: u64, client_id_array: *const u16, return_code: *const c_char) -> c_uint,
+	pub request_unmute_clients_temporary:               extern fn(server_connection_handler_id: u64, client_id_array: *const u16, return_code: *const c_char) -> c_uint,
+	pub get_permission_name_by_id:                      extern fn(sc_handler_id: u64, permission_id: c_uint, result: *mut c_char, max_len: usize) -> c_uint,
+	pub client_property_flag_to_string:                 extern fn(client_property_flag: usize, result_string: *mut *mut c_char) -> c_uint,
+	pub channel_property_flag_to_string:                extern fn(client_property_flag: usize, result_string: *mut *mut c_char) -> c_uint,
+	pub server_property_flag_to_string:                 extern fn(client_property_flag: usize, result_string: *mut *mut c_char) -> c_uint,
 }

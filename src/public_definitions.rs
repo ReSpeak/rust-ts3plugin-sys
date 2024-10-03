@@ -238,6 +238,7 @@ pub enum ChannelProperties {
 	BannerGfxUrl,
 	/// Available for all channels that are "in view", always up-to-date
 	BannerMode,
+	PermissionHints,
 	Endmarker,
 
 	/// (for clientlibv2) expected delete time in monotonic clock seconds or 0 if nothing is expected
@@ -371,6 +372,9 @@ pub enum ClientProperties {
 	Integrations,
 	/// Stores info from the myts server and contains the subscription info
 	ActiveIntegrationsInfo,
+	MytsAvatar,
+	SignedBadges,
+	PermissionHints,
 	Endmarker,
 
 	/// (for clientlibv2) unique hardware id
