@@ -273,11 +273,11 @@ pub struct Ts3Functions {
 	pub get_client_needed_permission:                   extern fn(server_connection_handler_id: u64, permission_name: *const c_char, result: *mut c_int) -> c_uint,
 	pub notify_key_event:                               extern fn(plugin_id: *const c_char, key_identifier: *const c_char, up_down: c_int),
 
-	/// Recording
+	/// Single-Track/Multi-Track recording
 	pub start_recording:                                extern fn(server_connection_handler_id: u64, multitrack: c_int, no_file_selector: c_int, path: *const c_char) -> c_uint,
 	pub stop_recording:                                 extern fn(server_connection_handler_id: u64) -> c_uint,
 
-	/// Convenience
+	/// Convenience functions
 	pub request_clients_move:                           extern fn(server_connection_handler_id: u64, client_id_array: *const u16, new_channel_id: u64, password: *const c_char, return_code: *const c_char) -> c_uint,
 	pub request_clients_kick_from_channel:              extern fn(server_connection_handler_id: u64, client_id_array: *const u16, kick_reason: *const c_char, return_code: *const c_char) -> c_uint,
 	pub request_clients_kick_from_server:               extern fn(server_connection_handler_id: u64, client_id_array: *const u16, kick_reason: *const c_char, return_code: *const c_char) -> c_uint,
@@ -287,4 +287,17 @@ pub struct Ts3Functions {
 	pub client_property_flag_to_string:                 extern fn(client_property_flag: usize, result_string: *mut *mut c_char) -> c_uint,
 	pub channel_property_flag_to_string:                extern fn(client_property_flag: usize, result_string: *mut *mut c_char) -> c_uint,
 	pub server_property_flag_to_string:                 extern fn(client_property_flag: usize, result_string: *mut *mut c_char) -> c_uint,
+
+	/// Server editing
+	pub set_server_variable_as_int:                     extern fn(server_connection_handler_id: u64, flag: usize, value: c_int) -> c_uint,
+	pub set_server_variable_as_uint64:                  extern fn(server_connection_handler_id: u64, flag: usize, value: u64) -> c_uint,
+	pub set_server_variable_as_double:                  extern fn(server_connection_handler_id: u64, flag: usize, value: f64) -> c_uint,
+	pub set_server_variable_as_string:                  extern fn(server_connection_handler_id: u64, flag: usize, value: *const c_char) -> c_uint,
+	pub flush_server_updates:                           extern fn(server_connection_handler_id: u64, return_code: *const c_char) -> c_uint,
+
+	/// Server/Channel group helper functions
+	pub get_server_group_id_by_name:                    extern fn(server_connection_handler_id: u64, group_name: *const c_char, result: *mut c_uint) -> c_uint,
+	pub get_server_group_name_by_id:                    extern fn(sc_handler_id: u64, group_id: c_uint, result: *mut c_char, max_len: usize) -> c_uint,
+	pub get_channel_group_id_by_name:                   extern fn(server_connection_handler_id: u64, group_name: *const c_char, result: *mut c_uint) -> c_uint,
+	pub get_channel_group_name_by_id:                   extern fn(sc_handler_id: u64, group_id: c_uint, result: *mut c_char, max_len: usize) -> c_uint,
 }

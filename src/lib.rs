@@ -5,7 +5,6 @@
 #[macro_use]
 extern crate bitflags;
 
-pub mod clientlib_publicdefinitions;
 pub mod plugin_definitions;
 pub mod public_definitions;
 pub mod public_errors;

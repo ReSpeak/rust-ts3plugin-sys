@@ -4,6 +4,8 @@ The documentation can be found here: [![At docs.rs](https://docs.rs/ts3plugin-sy
 
 A higher level library that depends on this ffi bindings is [ts3plugin](https://github.com/Flakebi/rust-ts3plugin).
 
+Version 0.5 is compatible with the plugin api version 26.
+
 TeamSpeak 3.3 updates the plugin api version from 22 to 23.  
 Version 0.4 and above are compatible with this version.
 

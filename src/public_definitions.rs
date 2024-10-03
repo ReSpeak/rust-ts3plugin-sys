@@ -7,11 +7,15 @@
 use std;
 use std::os::raw::*;
 
-/// Limited length, measured in characters
+/// channel name maximum length in characters
 pub const MAX_SIZE_CHANNEL_NAME:                     usize = 40;
+/// virtual server name maximum length in characters
 pub const MAX_SIZE_VIRTUALSERVER_NAME:               usize = 40;
+/// client display name length limit in characters
 pub const MAX_SIZE_CLIENT_NICKNAME:                  usize = 40;
+/// client display name minimum length in characters
 pub const MIN_SIZE_CLIENT_NICKNAME:                  usize =  3;
+/// length limit in characters for kick, move, etc reasons
 pub const MAX_SIZE_REASON_MESSAGE:                   usize = 80;
 pub const MAX_SIZE_CLIENT_NICKNAME_NONSDK:           usize = 30;
 pub const MIN_SIZE_CLIENT_NICKNAME_NONSDK:           usize =  3;
@@ -25,11 +29,15 @@ pub const MAX_SIZE_HOSTBUTTON_TOOLTIP:               usize = 50;
 pub const MAX_SIZE_POKE_MESSAGE:                     usize = 100;
 pub const MAX_SIZE_OFFLINE_MESSAGE:                  usize = 4096;
 pub const MAX_SIZE_OFFLINE_MESSAGE_SUBJECT:          usize = 200;
+pub const MAX_SIZE_USER_TAG:                         usize = 100;
 
-/// Limited length, measured in bytes (UTF-8 encoded)
+/// text message length limit, measured in bytes (utf8 encoded)
 pub const MAX_SIZE_TEXTMESSAGE:                      usize = 8192;
+/// // channel topic lengt limith, measured in bytes (utf8 encoded)
 pub const MAX_SIZE_CHANNEL_TOPIC:                    usize =  255;
+/// channel description length limit, measured in bytes (utf8 encoded)
 pub const MAX_SIZE_CHANNEL_DESCRIPTION:              usize = 8192;
+/// server welcome message length limit measured in bytes (utf8 encoded)
 pub const MAX_SIZE_VIRTUALSERVER_WELCOMEMESSAGE:     usize = 1024;
 pub const MAX_SIZE_VIRTUALSERVER_HOSTBANNER_GFX_URL: usize = 2000;
 pub const SIZE_MYTSID:                               usize = 44;
@@ -37,6 +45,41 @@ pub const SIZE_MYTSID:                               usize = 44;
 /// Minimum amount of seconds before a clientID that was in use can be assigned to a new client
 pub const MIN_SECONDS_CLIENTID_REUSE:                usize = 300;
 pub const MAX_VARIABLES_EXPORT_COUNT:                usize = 64;
+
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Visibility {
+	/// Client joined from an unsubscribed channel, or joined the server.
+	Enter = 0,
+	/// Client switched from one subscribed channel to a different subscribed channel.
+	Retain,
+	/// Client switches to an unsubscribed channel, or disconnected from server.
+	Leave,
+}
+
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum ConnectStatus {
+	/// There is no activity to the server, this is the default value
+	Disconnected = 0,
+	/// We are trying to connect, we haven't got a clientID yet, we haven't been accepted by the server
+	Connecting,
+	/// The server has accepted us, we can talk and hear and we got a clientID, but we don't have the channels and clients yet, we can get server infos (welcome msg etc.)
+	Connected,
+	/// We are connected and we are visible
+	ConnectionEstablishing,
+	/// We are connected and we have the client and channels available
+	ConnectionEstablished,
+}
+
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum LocalTestMode {
+	Off                 = 0,
+	VoiceLocalOnly,
+	VoiceLocalAndRemote,
+	TalkStatusChangesOnly,
+}
 
 bitflags! {
 /// Speaker locations used by some sound callbacks
@@ -68,21 +111,24 @@ pub struct Speaker: c_uint {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TalkStatus {
+	/// client is not talking
 	NotTalking           = 0,
+	/// client is talking
 	Talking              = 1,
+	/// client is talking while the microphone is muted (only valid for own client)
 	TalkingWhileDisabled = 2,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CodecType {
-	/// Mono,   16bit,  8kHz, bitrate dependent on the quality setting
+	/// (deprecated) Mono,   16bit,  8kHz, bitrate dependent on the quality setting
 	SpeexNarrowband = 0,
-	/// Mono,   16bit, 16kHz, bitrate dependent on the quality setting
+	/// (deprecated) Mono,   16bit, 16kHz, bitrate dependent on the quality setting
 	SpeexWideband,
-	/// Mono,   16bit, 32kHz, bitrate dependent on the quality setting
+	/// (deprecated) Mono,   16bit, 32kHz, bitrate dependent on the quality setting
 	SpeexUltrawideband,
-	/// Mono,   16bit, 48kHz, bitrate dependent on the quality setting
+	/// (deprecated) Mono,   16bit, 48kHz, bitrate dependent on the quality setting
 	CeltMono,
 	/// Mono,   16bit, 48kHz, bitrate dependent on the quality setting, optimized for voice
 	OpusVoice,
@@ -93,16 +139,22 @@ pub enum CodecType {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CodecEncryptionMode {
+	/// voice data encryption decided per channel
 	PerChannel = 0,
+	/// voice data encryption disabled
 	ForcedOff,
+	/// voice data encryption enabled
 	ForcedOn,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TextMessageTargetMode {
+	/// Message is a private message to another client
 	Client = 1,
+	/// Message is sent to a channel, received by all clients in that channel at the time
 	Channel,
+	/// Message is sent to every client on the server
 	Server,
 	Max,
 }
@@ -110,35 +162,45 @@ pub enum TextMessageTargetMode {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MuteInputStatus {
+	/// Microphone is not muted, audio is sent to the server
 	None = 0,
+	/// Microphone is muted, no audio is transmitted to the server
 	Muted,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum MuteOutputStatus {
+	/// Speaker is active, server is sending us audio
 	None = 0,
+	/// Speaker is muted, server is not sending audio to us
 	Muted,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HardwareInputStatus {
+	/// no capture device opened
 	Disabled = 0,
+	/// capture device open
 	Enabled,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HardwareOutputStatus {
+	/// no playback device opened
 	Disabled = 0,
+	/// playback device open
 	Enabled,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum InputDeactivationStatus {
+	/// Audio is captured from the capture device.
 	Active      = 0,
+	/// No audio is captured from the capture device.
 	Deactivated = 1,
 }
 
@@ -147,7 +209,7 @@ pub enum InputDeactivationStatus {
 pub enum ReasonIdentifier {
 	/// No reason data
 	None                              = 0,
-	/// {SectionInvoker}
+	/// client was moved
 	Moved                             = 1,
 	/// No reason data
 	Subscription                      = 2,
@@ -173,44 +235,83 @@ pub enum ReasonIdentifier {
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum ProtocolEncryptionCipher {
+	Aes128 = 0,
+	Aes256,
+	EndMarker,
+}
+
+#[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ChannelProperties {
-	/// Available for all channels that are "in view", always up-to-date
+	/// String.  Read/Write. Name of the channel. Always available.
 	Name = 0,
-	/// Available for all channels that are "in view", always up-to-date
+	/// String.  Read/Write. Short single line text describing what the channel is about. Always available.
 	Topic,
-	/// Must be requested (=> requestChannelDescription)
+	/// String.  Read/Write. Arbitrary text (up to 8k bytes) with information about the channel.
+	/// Must be requested (`ts3client_requestChannelDescription`)
 	Description,
-	/// Not available client side
+	/// String.  Read/Write. Password of the channel. Read access is limited to the server. Clients
+	/// will only ever see the last password they attempted to use when joining the channel. Always available.
 	Password,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. The codec this channel is using. One of the values from the `CodecType`
+	/// enum. Always available.
 	Codec,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. The quality setting of the channel. Valid values are 0 to 10 inclusive.
+	/// Higher value means better voice quality but also more bandwidth usage. Always available.
 	CodecQuality,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. The number of clients that can be in the channel simultaneously.
+	/// Always available.
 	MaxClients,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. The total number of clients that can be in this channel and all
+	/// sub channels of this channel. Always available.
 	MaxFamilyClients,
-	/// Available for all channels that are "in view", always up-to-date
+	/// UInt64.  Read/Write. The ID of the channel below which this channel should be displayed. If 0
+	/// the channel is sorted at the top of the current level. Always available.
 	Order,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. Boolean (1/0) indicating whether the channel remains when empty.
+	/// Permanent channels are stored to the database and available after server restart. SDK
+	/// users will need to take care of restoring channel at server start on their own.
+	/// Mutually exclusive with `CHANNEL_FLAG_SEMI_PERMANENT`. Always available.
 	FlagPermanent,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. Boolean (1/0) indicating whether the channel remains when
+	/// empty. Semi permanent channels are not stored to disk and gone after server
+	/// restart but remain while empty. Mutually exclusive with 
+	/// `CHANNEL_FLAG_PERMANENT.`` Always available.
 	FlagSemiPermanent,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. Boolean (1/0). The default channel is the channel that all clients
+	/// are located in when they join the server, unless the client explicitly specified a
+	/// different channel when connecting and is allowed to join their preferred channel. Only
+	/// one channel on the server can have this flag set. The default channel must have 
+	/// `CHANNEL_FLAG_PERMANENT` set. Always available.
 	FlagDefault,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. Boolean (1/0) indicating whether this channel is password protected.
+	/// When removing or setting `CHANNEL_PASSWORD` you also need to adjust this flag.
 	FlagPassword,
-	/// Available for all channels that are "in view", always up-to-date
+	/// (deprecated) Integer. Read/Write. Allows to increase packet size, reducing
+	/// bandwith at the cost of higher latency of voice transmission. Valid values are
+	/// 1-10 inclusive. 1 is the default and offers the lowest latency. Always available.
 	CodecLatencyFactor,
-	/// Available for all channels that are "in view", always up-to-date
+	/// Integer. Read/Write. Boolean (1/0). If 0 voice data is encrypted, if 1 the voice
+	/// data is not encrypted. Only used if the server 
+	/// `VIRTUALSERVER_CODEC_ENCRYPTION_MODE` is set to `CODEC_ENCRYPTION_PER_CHANNEL`.
+	/// Always available.
 	CodecIsUnencrypted,
-	/// Not available client side, not used in teamspeak, only SDK. Sets the options+salt for security hash.
+	/// String.  Read/Write. SDK Only, not used by TeamSpeak. This channels security hash. When
+	/// a client joins their `CLIENT_SECURITY_HASH` is compared to this value, to allow or
+	/// deny the client access to the channel. Used to enforce clients joining the server with
+	/// specific identity and `CLIENT_META_DATA`. See SDK Documentation about this feature
+	/// for further details. Always available.
 	SecuritySalt,
-	/// How many seconds to wait before deleting this channel
+	/// UInt64.  Read/Write. Number of seconds deletion of temporary channels is delayed after
+	/// the last client leaves the channel. Channel is only deleted if empty when the delete
+	/// delay expired. Always available.
 	DeleteDelay,
+	/// String.  Read only.  An identifier that uniquely identifies a channel. Available in
+	/// Server >= 3.10.0
+	UniqueIdentifier,
 
 	/// Rare properties
-	Dummy2,
 	Dummy3,
 	Dummy4,
 	Dummy5,
@@ -239,6 +340,8 @@ pub enum ChannelProperties {
 	/// Available for all channels that are "in view", always up-to-date
 	BannerMode,
 	PermissionHints,
+	/// Storage space that is allowed to be used by this channels files (in MiB)
+	StorageQuota,
 	Endmarker,
 
 	/// (for clientlibv2) expected delete time in monotonic clock seconds or 0 if nothing is expected
@@ -248,49 +351,71 @@ pub enum ChannelProperties {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ClientProperties {
-	/// Automatically up-to-date for any client "in view", can be used to identify this particular client installation
+	/// String.  Read only.  Public Identity, can be used to identify a client
+	/// installation. Remains identical as long as the client keeps using the same
+	/// identity. Available for visible clients.
 	UniqueIdentifier = 0,
-	/// Automatically up-to-date for any client "in view"
+	/// String.  Read/Write. Display name of the client. Available for visible clients.
 	Nickname,
-	/// For other clients than ourself, this needs to be requested (=> requestClientVariables)
+	/// String.  Read only.  Version String of the client used. For clients other than ourself this
+	/// needs to be requested (`ts3client_requestClientVariables`).
 	Version,
-	/// For other clients than ourself, this needs to be requested (=> requestClientVariables)
+	/// String.  Read only.  Operating system used by the client. For other clients other than ourself
+	/// this needs to be requested (`ts3client_requestClientVariables`).
 	Platform,
-	/// Automatically up-to-date for any client that can be heard (in room / whisper)
+	/// Integer. Read only.  Whether the client is talking. Available on clients that are either
+	/// whispering to us, or in our channel.
 	FlagTalking,
-	/// Automatically up-to-date for any client "in view", this clients microphone mute status
+	/// Integer. Read/Write. Microphone mute status. Available for visible clients. One of the
+	/// values from the `MuteInputStatus` enum.
 	InputMuted,
-	/// Automatically up-to-date for any client "in view", this clients headphones/speakers/mic combined mute status
+	/// Integer. Read only.  Speaker mute status. Speaker mute implies microphone mute. Available
+	/// for visible clients. One of the values from the `MuteOutputStatus` enum.
 	OutputMuted,
-	/// Automatically up-to-date for any client "in view", this clients headphones/speakers only mute status
+	/// Integer. Read only.  Speaker mute status. Microphone may be active. Available for
+	/// visible clients. One of the values from the `MuteOutputStatus` enum.
 	OutputOnlyMuted,
-	/// Automatically up-to-date for any client "in view", this clients microphone hardware status (is the capture device opened?)
+	/// Integer. Read only.  Indicates whether a capture device is open. Available for visible
+	/// clients. One of the values from the `HardwareInputStatus` enum.
 	InputHardware,
-	/// Automatically up-to-date for any client "in view", this clients headphone/speakers hardware status (is the playback device opened?)
+	/// Integer. Read only.  Indicates whether a playback device is open. Available for visible
+	/// clients. One of the values from the `HardwareOutputStatus` enum.
 	OutputHardware,
-	/// Only usable for ourself, not propagated to the network
+	/// Integer. Read/Write. Not available server side. Local microphone mute status.
+	/// Available only for own client. Used to implement Push To Talk. One of the values from
+	/// the `InputDeactivationStatus` enum.
 	InputDeactivated,
-	/// Internal use
+	/// UInt64.  Read only.  Seconds since last activity. Available only for own client.
 	IdleTime,
-	/// Only usable for ourself, the default channel we used to connect on our last connection attempt
+	/// String.  Read only.  User specified channel they joined when connecting to the server.
+	/// Available only for own client.
 	DefaultChannel,
-	/// Internal use
+	/// String.  Read only.  User specified channel password for the channel they
+	/// attempted to join when connecting to the server. Available only for own
+	/// client.
 	DefaultChannelPassword,
-	/// Internal use
+	/// String.  Read only.  User specified server password. Available only for own client.
 	ServerPassword,
-	/// Automatically up-to-date for any client "in view", not used by TeamSpeak, free storage for sdk users
+	/// String.  Read/Write. Can be used to store up to 4096 bytes of information on clients. Not
+	/// used by TeamSpeak. Available for visible clients.
 	MetaData,
-	/// Only make sense on the client side locally, "1" if this client is currently muted by us, "0" if he is not
+	/// Integer. Read only.  Not available server side. Indicates whether we have muted the client
+	/// using `ts3client_requestMuteClients`. Available for visible clients other than ourselves.
 	IsMuted,
-	/// Automatically up-to-date for any client "in view"
+	/// Integer. Read only.  Indicates whether the client is recording incoming audio. Available
+	/// for visible clients.
 	IsRecording,
-	/// Internal use
+	/// Integer. Read only.  Volume adjustment for this client as set by
+	/// `ts3client_setClientVolumeModifier`. Available for visible clients.
 	VolumeModificator,
-	/// Sign
+	/// String.  Read only.  TeamSpeak internal signature.
 	VersionSign,
-	/// SDK use, not used by teamspeak. Hash is provided by an outside source. A channel will use the security salt + other client data to calculate a hash, which must be the same as the one provided here.
+	/// String.  Read/Write. This clients security hash. Not used by TeamSpeak, SDK only. Hash is
+	/// provided by an outside source. A channel will use the security salt + other client data
+	/// to calculate a hash, which must be the same as the one provided here. See SDK
+	/// documentation about Client / Channel Security Hashes for more details.
 	SecurityHash,
-	/// Internal use
+	/// String.  Read only.  SDK only. List of available ciphers this client can use.
 	EncryptionCiphers,
 
 	/// Rare properties
@@ -375,6 +500,8 @@ pub enum ClientProperties {
 	MytsAvatar,
 	SignedBadges,
 	PermissionHints,
+	/// automatically up-to-date for any client "in view", stores public chat user tag
+	UserTag,
 	Endmarker,
 
 	/// (for clientlibv2) unique hardware id
@@ -384,31 +511,52 @@ pub enum ClientProperties {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum VirtualServerProperties {
-	/// Available when connected, can be used to identify this particular server installation
+	/// String.  Read only.  Unique identifier for a virtual server, does not
+	/// change on server restart. Available if `ts3client_getConnectionStatus`
+	/// is >= `STATUS_CONNECTED`.
 	UniqueIdentifier = 0,
-	/// Available and always up-to-date when connected
+	/// String.  Read/Write. The virtual server display name. Available if
+	/// `ts3client_getConnectionStatus` is >= `STATUS_CONNECTED`.
 	Name,
-	/// Available when connected, (=> requestServerVariables)
+	/// String.  Read/Write. The welcome message displayed to clients on connect.
+	/// Available if `ts3client_getConnectionStatus` is >= `STATUS_CONNECTED`. Not
+	/// updated automatically when changed, updates need to be requested (
+	/// `ts3client_requestServerVariables`).
 	Welcomemessage,
-	/// Available when connected
+	/// String.  Read only.  The operating system the server is running on. Available if
+	/// `ts3client_getConnectionStatus` is >= `STATUS_CONNECTED`.
 	Platform,
-	/// Available when connected
+	/// String.  Read only.  The server software version string. Available if
+	/// `ts3client_getConnectionStatus` is >= `STATUS_CONNECTED`.
 	Version,
-	/// Only available on request (=> requestServerVariables), stores the maximum number of clients that may currently join the server
+	/// UInt64.  Read/Write. The maximum number of clients that can be connected
+	/// simultaneously. Only available on request (`ts3client_requestServerVariables`).
 	MaxClients,
-	/// Not available to clients, the server password
+	/// String.  Read/Write. The server password. Read access is limited to the server. Clients
+	/// will only get the password they supplied when connecting. Available if
+	/// `ts3client_getConnectionStatus` is >= `STATUS_CONNECTED`.
 	Password,
-	/// Only available on request (=> requestServerVariables)
+	/// UInt64.  Read only.  The current number of clients connected to the server,
+	/// including query connections. Only available on request (\ref
+	/// ts3client_requestServerVariables).
 	ClientsOnline,
-	/// Only available on request (=> requestServerVariables)
+	/// UInt64.  Read only.  The current number of channels on the server. Only
+	/// available on request (`ts3client_requestServerVariables`).
 	ChannelsOnline,
-	/// Available when connected, stores the time when the server was created
+	/// Integer. Read only.  The time this virtual server was created as unix timestamp.
+	/// Available if `ts3client_getConnectionStatus` is >= `STATUS_CONNECTED`.
 	Created,
-	/// Only available on request (=> requestServerVariables), the time since the server was started
+	/// UInt64.  Read only.  Number of seconds that have passed since the virtual server was
+	/// started. Only available on request (`ts3client_requestServerVariables`).
 	Uptime,
-	/// Available and always up-to-date when connected
+	/// Integer. Read/Write. Boolean (1/0) that specifies if voice data is encrypted
+	/// during transfer. One of the values from the `CodecEncryptionMode` enum.
+	/// Available if `ts3client_getConnectionStatus` is >= `STATUS_CONNECTED`.
 	CodecEncryptionMode,
-	/// Internal use
+	/// String.  Read/Write. Comma separated list of available ciphers to encrypt the
+	/// connection. The server will use the first cipher in the list that is also
+	/// listed in the `CLIENT_ENCRYPTION_CIPHERS` of the connecting client.
+	/// Clients will fail to connect if no match is found. Always available.
 	EncryptionCiphers,
 
 	/// Rare properties
@@ -426,7 +574,9 @@ pub enum VirtualServerProperties {
 	Hostmessage,
 	/// Available when connected, not updated while connected
 	HostmessageMode,
-	/// Not available to clients, stores the folder used for file transfers
+	/// String.  Read only.  The path to the base directory used to store files
+	/// transferred using file transfer. Available only on the server. Is set by
+	/// `ts3server_enableFileManager`
 	Filebase,
 	/// The client permissions server group that a new client gets assigned
 	DefaultServerGroup,
@@ -436,9 +586,13 @@ pub enum VirtualServerProperties {
 	FlagPassword,
 	/// The channel permissions group that a client gets assigned when creating a channel
 	DefaultChannelAdminGroup,
-	/// Only available on request (=> requestServerVariables)
+	/// UInt64.  Read/Write. Maximum traffic in bytes the server can
+	/// use for file transfer downloads. Only available on request
+	/// (`ts3client_requestServerVariables`).
 	MaxDownloadTotalBandwidth,
-	/// Only available on request (=> requestServerVariables)
+	/// UInt64.  Read/Write. Maximum traffic in bytes the server can
+	/// use for file transfer uploads. Only available on request
+	/// (`ts3client_requestServerVariables`).
 	MaxUploadTotalBandwidth,
 	/// Available when connected, always up-to-date
 	HostbannerUrl,
@@ -506,7 +660,9 @@ pub enum VirtualServerProperties {
 	LogPermissions,
 	/// Only available on request (=> requestServerVariables)
 	LogServer,
-	/// Only available on request (=> requestServerVariables)
+	/// Integer. Read/Write. Boolean (1/0) indicating whether to include file
+	/// transfer activities (uploading or downloading of files) in the server log.
+	/// Always available.
 	LogFiletransfer,
 	/// Only available on request (=> requestServerVariables)
 	MinClientVersion,
@@ -552,77 +708,166 @@ pub enum VirtualServerProperties {
 	ProtocolVerifyKeypair,
 	/// Only available on request (=> requestServerVariables)
 	AntifloodPointsNeededPluginBlock,
+	/// available when connected, not updated while connected
+    CapabilityExtensions,
+    /// Allowed filetransfer storage on this server (including chat attachments) in megabytes
+    StorageQuota,
+    /// internal use
+    WebrtcCertificate,
+    /// internal use
+    WebrtcPrivateKey,
+    /// the uuid of the server (uuid v5 of VIRTUALSERVER_UNIQUE_IDENTIFIER)
+    Uuid,
+    /// The domain which is responsible for this teamspeak server (which hosts its .well-known file)
+    AdministrativeDomain,
+    /// The canonical name under which the server is reachable
+    CanonicalName,
+    /// Only clients that have a valid mytsid can connect
+    MytsidConnectOnly,
+    /// How many matrix homebases this virtual server supports. -1 = no limit
+    MaxHomebases,
+    /// Allowed filetransfer storage for homebase attachments in megabytes
+    HomebaseStorageQuota,
 	Endmarker,
 }
 
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ConnectionProperties {
-	/// Average latency for a round trip through and back this connection
+	/// UInt64. Round trip latency for the connection based on the last 5 seconds. On the server
+	/// this is the average across all connected clients for the last 5 seconds.
 	Ping = 0,
-	/// Standard deviation of the above average latency
+	/// Double. Standard deviation for the round trip latency in `CONNECTION_PING`
 	PingDeviation,
-	/// How long the connection exists already
+	/// UInt64. Seconds the client has been connected.
 	ConnectedTime,
-	/// How long since the last action of this client
+	/// UInt64. Time in seconds since the last activity (voice transmission, switching channels,
+	/// changing mic / speaker mute status) of the client.
 	IdleTime,
-	/// IP of this client (as seen from the server side)
+	/// String. IP of this client (as seen from the server side)
 	ClientIp,
-	/// Port of this client (as seen from the server side)
+	/// UInt64. Client side port of this client (as seen from the server side)
 	ClientPort,
-	/// IP of the server (seen from the client side) - only available on yourself, not for remote clients, not available server side
+	/// String. The IP or hostname used to connect to the server. Only available on yourself.
 	ServerIp,
-	/// Port of the server (seen from the client side) - only available on yourself, not for remote clients, not available server side
+	/// UInt64. The server port connected to. Only available on yourself.
 	ServerPort,
-	/// How many Speech packets were sent through this connection
+	/// UInt64. The number of voice packets transmitted by the client.
 	PacketsSentSpeech,
+	/// UInt64. The number of keep alive packets transmitted by the client.
 	PacketsSentKeepalive,
+	/// UInt64. The number of command & control packets transmitted by the client.
 	PacketsSentControl,
-	/// How many packets were sent totally (this is PACKETS_SENT_SPEECH + PACKETS_SENT_KEEPALIVE + PACKETS_SENT_CONTROL)
+	/// UInt64. Total number of packets transmitted by the client. Equal to the sum of
+	/// `CONNECTION_PACKETS_SENT_SPEECH`, `CONNECTION_PACKETS_SENT_KEEPALIVE` and
+	/// `CONNECTION_PACKETS_SENT_CONTROL`
 	PacketsSentTotal,
+	/// UInt64. Outgoing traffic used for voice data by the client.
 	BytesSentSpeech,
+	/// UInt64. Outgoing traffic used for keeping the connection alive by the client.
 	BytesSentKeepalive,
+	/// UInt64. Outgoing traffic used for command & control data by the client.
 	BytesSentControl,
+	/// UInt64. Total outgoing traffic to the server by this client. Equal to the sum of
+	/// `CONNECTION_BYTES_SENT_SPEECH`, `CONNECTION_BYTES_SENT_KEEPALIVE` and
+	/// `CONNECTION_BYTES_SENT_CONTROL`
 	BytesSentTotal,
+	/// UInt64. Number of voice packets received by the client.
 	PacketsReceivedSpeech,
+	/// UInt64. Number of keep alive packets received by the client.
 	PacketsReceivedKeepalive,
+	/// UInt64. Number of command & control packets received by the client.
 	PacketsReceivedControl,
+	/// UInt64. Total number of packets received by the client. Equal to the sum of
+	/// `CONNECTION_PACKETS_RECEIVED_SPEECH`,
+	/// `CONNECTION_PACKETS_RECEIVED_KEEPALIVE` and
+	/// `CONNECTION_PACKETS_RECEIVED_CONTROL`
 	PacketsReceivedTotal,
+	/// UInt64. Incoming traffic used by the client for voice data.
 	BytesReceivedSpeech,
+	/// UInt64. Incoming traffic used by the client to keep the connection alive.
 	BytesReceivedKeepalive,
+	/// UInt64. Incoming traffic used by the client for command & control data.
 	BytesReceivedControl,
+	/// UInt64. Total incoming traffic used by the client. Equal to the sum of
+	/// `CONNECTION_BYTES_RECEIVED_SPEECH`, `CONNECTION_BYTES_RECEIVED_KEEPALIVE` and
+	/// `CONNECTION_BYTES_RECEIVED_CONTROL`
 	BytesReceivedTotal,
+	/// Double. Percentage points of voice packets for the client that did not arrive at
+	/// the client or server averaged across the last 5 seconds.
 	PacketlossSpeech,
+	/// Double. Percentage points of keep alive packets for the client that did not
+	/// arrive at the client or server averaged across the last 5 seconds.
 	PacketlossKeepalive,
+	/// Double. Percentage points of command & control packets for the client that did
+	/// not arrive at the client or server averaged across the last 5 seconds.
 	PacketlossControl,
-	/// The probability with which a packet round trip failed because a packet was lost
+	/// Double. Cumulative chance in percentage points with which a packet round trip
+	/// failed because a packet was lost
 	PacketlossTotal,
-	/// The probability with which a speech packet failed from the server to the client
+	/// Double. Probability with which a voice packet sent by the server
+	/// was not received by the client.
 	Server2ClientPacketlossSpeech,
+	/// Double. Probability with which a keepalive packet sent by the
+	/// server was not received by the client.
 	Server2ClientPacketlossKeepalive,
+	/// Double. Probability with which a control packet sent by the server
+	/// was not received by the client.
 	Server2ClientPacketlossControl,
+	/// Double. Probability with which a packet sent by the server was not
+	/// received by the client.
 	Server2ClientPacketlossTotal,
+	/// Double. Probability with which a speech packet sent by the client
+	/// was not received by the server.
 	Client2ServerPacketlossSpeech,
+	/// Double. Probability with which a keepalive packet sent by the
+	/// client was not received by the server.
 	Client2ServerPacketlossKeepalive,
+	/// Double. Probability with which a control packet sent by the client
+	/// was not received by the server.
 	Client2ServerPacketlossControl,
+	/// Double. Probability with which a packet sent by the client was not
+	/// received by the server.
 	Client2ServerPacketlossTotal,
-	/// Howmany bytes of speech packets we sent during the last second
+	/// UInt64. Number of bytes sent for speech data in the last second.
 	BandwidthSentLastSecondSpeech,
+	/// UInt64. Number of bytes sent for keepalive data in the last second.
 	BandwidthSentLastSecondKeepalive,
+	/// UInt64. Number of bytes sent for control data in the last second.
 	BandwidthSentLastSecondControl,
+	/// UInt64. Number of bytes sent in the last second.
 	BandwidthSentLastSecondTotal,
-	/// Howmany bytes/s of speech packets we sent in average during the last minute
+	/// UInt64. Bytes per second sent for speech data, averaged over the
+	/// last minute.
 	BandwidthSentLastMinuteSpeech,
+	/// UInt64. Bytes per second sent for keepalive data, averaged
+	/// over the last minute.
 	BandwidthSentLastMinuteKeepalive,
+	/// UInt64. Bytes per second sent for control data, averaged over
+	/// the last minute.
 	BandwidthSentLastMinuteControl,
+	/// UInt64. Bytes per second sent, averaged over the last minute.
 	BandwidthSentLastMinuteTotal,
+	/// UInt64. Number of bytes received for speech data in the last second.
 	BandwidthReceivedLastSecondSpeech,
+	/// UInt64. Number of bytes received for keepalive data in the
+	/// last second.
 	BandwidthReceivedLastSecondKeepalive,
+	/// UInt64. Number of bytes received for control data in the
+	/// last second.
 	BandwidthReceivedLastSecondControl,
+	/// UInt64. Number of bytes received in the last second.
 	BandwidthReceivedLastSecondTotal,
+	/// UInt64. Bytes per second received for speech data, averaged
+	/// over the last minute.
 	BandwidthReceivedLastMinuteSpeech,
+	/// UInt64. Bytes per second received for keepalive data,
+	/// averaged over the last minute.
 	BandwidthReceivedLastMinuteKeepalive,
+	/// UInt64. Bytes per second received for control data, averaged
+	/// over the last minute.
 	BandwidthReceivedLastMinuteControl,
+	/// UInt64. Bytes per second received, averaged over the last minute.
 	BandwidthReceivedLastMinuteTotal,
 
 	/// Rare properties
@@ -636,13 +881,20 @@ pub enum ConnectionProperties {
 	Dummy7,
 	Dummy8,
 	Dummy9,
-	/// How many bytes per second are currently being sent by file transfers
+	/// UInt64. Current file transfer upstream activity in bytes per second.
+	/// Only available on request (`ts3client_requestServerConnectionInfo`).
 	FileTransferBandwidthSent,
-	/// Bow many bytes per second are currently being received by file transfers
+	/// UInt64. Current file transfer downstream activity in bytes per
+	/// second. Only available on request (
+	/// `ts3client_requestServerConnectionInfo`).
 	FiletransferBandwidthReceived,
-	/// How many bytes we received in total through file transfers
+	/// UInt64. Total downstream traffic, in bytes, used for file
+	/// transfer since the server was started. Only available on request
+	/// (\ref ts3client_requestServerConnectionInfo).
 	FiletransferBytesReceivedTotal,
-	/// How many bytes we sent in total through file transfers
+	/// UInt64. Total upstream traffic, in bytes, used for file transfer
+	/// since the server was started. Only available on request (
+	/// `ts3client_requestServerConnectionInfo`).
 	FiletransferBytesSentTotal,
 	Endmarker,
 }
@@ -650,12 +902,19 @@ pub enum ConnectionProperties {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LogTypes {
+	/// Logging is disabled
 	None         =  0,
+	/// Log to regular log file
 	File         =  1,
+	/// Log to standard output / error
 	Console      =  2,
+	/// User defined logging. Will call the `ServerLibFunctions.onUserLoggingMessageEvent` callback for every message to be logged
 	Userlogging  =  4,
+	/// Not used
 	NoNetlogging =  8,
+	/// Log to database (deprecated, server only, no effect in SDK)
 	Database     = 16,
+	/// Log to syslog (only available on Linux)
 	Syslog       = 32,
 }
 
@@ -676,6 +935,7 @@ pub enum LogLevel {
 	Devel,
 }
 
+/// Describes a client position in 3 dimensional space, used for 3D Sound.
 #[repr(C)]
 pub struct Ts3Vector {
 	/// X co-ordinate in 3D space
@@ -689,9 +949,13 @@ pub struct Ts3Vector {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum GroupWhisperType {
+	/// Whisper list consists of server groups
 	Servergroup      = 0,
+	/// Whisper list consists of channel groups
 	Channelgroup     = 1,
+	/// whisper to channel commanders
 	Channelcommander = 2,
+	/// whisper to all clients
 	Allclients       = 3,
 	Endmarker,
 }
@@ -700,11 +964,17 @@ pub enum GroupWhisperType {
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum GroupWhisperTargetMode {
 	All                   = 0,
+	/// Whisper the current channel of the client
 	Currentchannel        = 1,
+	/// Whisper the parent channel of whatever channel the client is currently in
 	Parentchannel         = 2,
+	/// Whipser to the parent channel and all their parent channels as well
 	Allparentchannel      = 3,
+	/// Whisper to the current channel and all its sub channels
 	Channelfamily         = 4,
+	/// Whisper to the current channel, all its parent and sub channels.
 	Ancestorchannelfamily = 5,
+	/// Whisper to all sub channels of the current channel of the client
 	Subchannels           = 6,
 	Endmarker,
 }
@@ -733,18 +1003,31 @@ pub enum SecuritySaltOptions {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum ClientCommand {
+	/// disable client connection info request (client bandwidth usage, ip, port, ping)
 	RequestConnectionInfo       = 0,
+	/// disable moving clients
 	RequestClientMove           = 1,
+	/// disable muting other clients
 	RequestXXMuteClients        = 2,
+	/// disable kicking clients
 	RequestClientKickFromXXX    = 3,
+	/// disable creating channels
 	FlushChannelCreation        = 4,
+	/// disable editing channels
 	FlushChannelUpdate          = 5,
+	/// disable moving channels
 	RequestChannelMove          = 6,
+	/// disable deleting channels
 	RequestChannelDelete        = 7,
+	/// disable channel descriptions
 	RequestChannelDescription   = 8,
+	/// disable being able to see clients in channels other than the current channel the client is in
 	RequestChannelXXSubscripeXX = 9,
+	/// disable server connection info request (server bandwidth usage, ip, port, ping)
 	RequestServerConnectionInfo = 10,
+	/// disable text messaging
 	RequestSendXXXTextMsg       = 11,
+	/// disable file transfer
 	FileTransfer                = 12,
 	Endmarker,
 }
@@ -762,14 +1045,23 @@ pub enum ACLType {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum FileTransferAction {
+	/// The virtual server is created. result->channelPath can be changed to create a different directory than the default 'virtualserver_x' where x is the virtual server.
 	InitServer  = 0,
+	/// A channel is created. result->channelPath can be changed to create a different directory then the default 'channel_x' where x is the channel id.
 	InitChannel = 1,
+	/// A file is being uploaded. All values in the result struct can be modified.
 	Upload      = 2,
+	/// A file is being downloaded. All values in the result struct can be modified.
 	Download    = 3,
+	/// A file is being deleted. All values in the result struct can be modified.
 	Delete      = 4,
+	/// A directory is being created in a channel. All values in the result struct can be modified.
 	CreateDir   = 5,
+	/// A file or folder is being renamed. The callback will be called twice! Once for the old and then for the new name. All values in the result struct can be modified.
 	Rename      = 6,
+	/// A directory listing is requested. All values in the result struct can be modified.
 	FileList    = 7,
+	/// Information of a file is requested. All values in the result struct can be modified.
 	FileInfo    = 8,
 }
 
@@ -777,8 +1069,11 @@ pub enum FileTransferAction {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum FileTransferState {
+	/// File transfer is establishing connection.
 	Initialising = 0,
+	/// File transfer is in progress
 	Active,
+	/// File transfer has finished
 	Finished,
 }
 
@@ -786,16 +1081,18 @@ pub enum FileTransferState {
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum FileListType {
+	/// The file entry is a directory
 	Directory = 0,
+	/// The file entry is a regular file
 	File,
 }
 
 /// Some structs to handle variables in callbacks
 #[repr(C)]
 pub struct VariablesExportItem {
-	/// This item has valid values. ignore this item if 0
+	/// Whether or not there is any data in this item. Ignore this item if this is 0.
 	pub item_is_valid:   u8,
-	/// The value in proposed is set. if 0 ignore proposed
+	/// The value in proposed is set. If 0 ignore proposed
 	pub proposed_is_set: u8,
 	/// Current value (stored in memory)
 	pub current:         *const c_char,
@@ -810,37 +1107,64 @@ pub struct VariablesExport {
 
 #[repr(C)]
 pub struct ClientMiniExport {
+	/// id of the client
 	pub id:       u16,
+	/// the channel the client is in
 	pub channel:  u64,
+	/// client public identity
 	pub ident:    *const c_char,
+	/// client display name
 	pub nickname: *const c_char,
 }
 
+/// Structure used to describe a file transfer in the \ref ServerLibFunctions.onTransformFilePath callback.
+/// This describes the original values, and also contains hints for length limitations of the result parameter
+/// of the callback.
+/// Important: Which values of the struct can be modified is defined by the action value of the original parameter.
 #[repr(C)]
 pub struct TransformFilePathExport {
+	/// The channel id of the file. 0 if action is \ref FT_INIT_SERVER
 	pub channel:                        u64,
+	/// utf8 encoded c string containing the original file name as intended by the client.
 	pub filename:                       *const c_char,
+	/// The action to be performed. One of the values from the \ref FTAction enum. Defines which values of the result struct can be modified.
 	pub action:                         c_int,
+	/// The maximum length the file name can be rewritten to.
 	pub transformed_file_name_max_size: c_int,
+	/// The maximum length the path can be rewritten to.
 	pub channel_path_max_size:          c_int,
 }
 
+/// Structure to rewrite the file transfer file name and path in the \ref ServerLibFunctions.onTransformFilePath callback.
+/// The lengths are limited as described in the original parameter.
+/// Important: Which values of the struct can be modified is defined by the action value of the original parameter.
 #[repr(C)]
 pub struct TransformFilePathExportReturns {
+	/// pointer to target file name. Fill the memory pointed to with an utf8 encoded c string containing the new file name. Limited to original->transformedFileNameMaxSize bytes.
 	pub transformed_file_name: *mut c_char,
+	/// pointer to memory for new path. Fill the memory pointed to with an utf8 encoded c string containing the new path. Limited to original->channelPathMaxSize bytes.
 	pub channel_path:          *mut c_char,
+	/// boolean (1/0). Whether to log this file transfer to the log. Action is not logged regardless of this value if the servers \ref VIRTUALSERVER_LOG_FILETRANSFER property is 0.
 	pub log_file_action:       c_int,
 }
 
 #[repr(C)]
 pub struct FileTransferCallbackExport {
+	/// the client who started the file transfer
 	pub client_id:          u16,
+	/// local identifier of the transfer that has completed
 	pub transfer_id:        u16,
+	/// remote identifier of the transfer that has completed
 	pub remote_transfer_id: u16,
+	/// status of the transfer. One of the values from the \ref FileTransferState enum
 	pub status:             c_uint,
+	/// utf8 encoded c string containing a human readable description of the status
 	pub status_message:     *const c_char,
+	/// size in bytes of the complete file to be transferred
 	pub remote_file_size:   u64,
+	/// number of bytes transferred. Same as remotefileSize when the transfer completed entirely.
 	pub bytes:              u64,
+	/// boolean. 1 if the server is sending the file. 0 if the server is receiving the file.
 	pub is_sender:          c_int,
 }
 
@@ -948,6 +1272,8 @@ pub enum ServerInstancePropertiesRare {
 	PermissionsVersion,
 	PendingConnectionsPerIp,
 	ServerqueryMaxConnectionsPerIp,
+	/// How many matrix homebase users this instance can have. -1 for no limit
+	MaxHomebases,
 	Endmarker,
 }
 
